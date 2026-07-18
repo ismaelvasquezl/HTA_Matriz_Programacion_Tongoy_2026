@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ProgramAPS · Cómo programar el año de nuestro CESFAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#061A1D; --void2:#0A2529; --deep:#0E3339; --panel:#F4F7F7; --panel2:#FFFFFF;
+  --ink:#0C1A1D; --ink2:#3B4E53; --ink3:#7C979B;
+  --brand:#0E5F63; --brand-lite:#3E9A93; --mint:#7FD4C4; --mint-dim:#5BAEA2;
+  --line:#D5E0E0; --line-dk:#1B4147;
+  --ok:#3BB273; --ok-dk:#1E7B4F; --warn:#E0A63C; --warn-dk:#B47714;
+  --crit:#E5645B; --crit-dk:#B3372F;
+  --sans:'IBM Plex Sans',system-ui,sans-serif; --disp:'Archivo',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#02090A;font-family:var(--sans);color:var(--ink);overflow:hidden}
+
+/* ── escenario y láminas ── */
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+.slide{position:absolute;width:min(96vw,1600px);height:min(96vh,900px);
+  aspect-ratio:16/9;border-radius:22px;overflow:hidden;
+  opacity:0;visibility:hidden;transform:scale(.985) translateY(8px);
+  transition:opacity .5s cubic-bezier(.2,.7,.2,1),transform .5s cubic-bezier(.2,.7,.2,1);
+  box-shadow:0 40px 120px rgba(0,0,0,.55);pointer-events:none}
+.slide.on{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.slide.dark{background:radial-gradient(120% 120% at 82% 12%,var(--deep) 0%,var(--void2) 42%,var(--void) 100%);color:#EAF3F2}
+.slide.light{background:var(--panel)}
+.pad{position:absolute;inset:0;padding:clamp(2rem,4.4vh,3.8rem) clamp(2.4rem,4.4vw,4.6rem);display:flex;flex-direction:column}
+
+/* ── tipografía compartida ── */
+.kicker{font-family:var(--mono);font-size:clamp(.62rem,1.15vw,.82rem);letter-spacing:.28em;
+  text-transform:uppercase;color:var(--brand-lite);display:flex;align-items:center;gap:.7rem}
+.dark .kicker{color:var(--mint-dim)}
+.kicker::before{content:"";width:26px;height:2px;background:currentColor;opacity:.7}
+h1.t{font-family:var(--disp);font-weight:800;letter-spacing:-.028em;line-height:1.02;
+  font-size:clamp(2rem,4.7vw,3.7rem);margin:.5rem 0 .2rem}
+.dark h1.t{color:#fff}
+.bajada{font-size:clamp(.95rem,1.5vw,1.18rem);color:var(--ink2);max-width:64ch;line-height:1.45}
+.dark .bajada{color:#AFC9C6}
+.remate{font-family:var(--disp);font-style:italic;font-weight:500;color:var(--ink2);
+  font-size:clamp(.95rem,1.5vw,1.16rem);line-height:1.4}
+.dark .remate{color:#B9D3D0}
+.spacer{flex:1}
+
+/* ── portada ── */
+.cover .wm{position:absolute;right:-4%;top:-12%;font-family:var(--disp);font-weight:800;
+  font-size:34vh;color:rgba(127,212,196,.05);letter-spacing:-.04em;pointer-events:none;user-select:none}
+.cover .brand{font-family:var(--disp);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(3.4rem,9vw,7rem);line-height:.92;color:#fff}
+.cover .brand em{font-style:normal;color:var(--mint)}
+.cover .sub{font-size:clamp(1.1rem,2.2vw,1.7rem);color:#CBE1DE;font-weight:500;margin-top:.6rem}
+.cover .baj{font-family:var(--disp);font-style:italic;color:var(--mint-dim);
+  font-size:clamp(.95rem,1.6vw,1.2rem);margin-top:.5rem}
+.cover .foot{position:absolute;left:clamp(2.4rem,4.4vw,4.6rem);bottom:clamp(2rem,4vh,3.4rem);
+  font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;color:var(--mint-dim)}
+/* firma: barra de balance en la portada */
+.balance-sig{display:flex;align-items:center;gap:0;margin-top:2.4rem;height:12px;width:min(52%,540px)}
+.balance-sig .neg{height:100%;background:linear-gradient(90deg,transparent,var(--crit));border-radius:6px 0 0 6px;flex:1}
+.balance-sig .mid{width:2px;height:26px;background:var(--mint)}
+.balance-sig .pos{height:100%;background:linear-gradient(90deg,var(--brand-lite),var(--mint));border-radius:0 6px 6px 0;flex:1}
+
+/* ── pregunta / momento ── */
+.big{font-family:var(--disp);font-weight:800;letter-spacing:-.03em;line-height:1.03;
+  font-size:clamp(2.4rem,6vw,5rem)}
+.big.two{color:var(--mint)}
+.dark .qbody{color:#B9D3D0;font-size:clamp(1rem,1.6vw,1.25rem);max-width:70ch;line-height:1.5;margin-top:1.6rem}
+.qremate{font-weight:700;font-style:italic;font-family:var(--disp);color:#fff;
+  font-size:clamp(1.05rem,1.8vw,1.4rem);margin-top:1rem}
+.blob{position:absolute;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--deep),transparent 70%);pointer-events:none}
+
+/* ── grillas y tarjetas ── */
+.grid{display:grid;gap:clamp(1rem,1.8vw,1.5rem)}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}.g6{grid-template-columns:repeat(6,1fr)}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:16px;
+  padding:clamp(1.1rem,2vw,1.6rem);box-shadow:0 2px 4px rgba(12,26,29,.04)}
+.card.tint-ok{background:#EAF6EF;border-color:#CDE9DA}
+.card.tint-warn{background:#FBF3E1;border-color:#F0E0BE}
+.card.tint-crit{background:#FCEBE9;border-color:#F5D3CF}
+.card.tint-info{background:#E7F1F1;border-color:#CADEDE}
+.card.dark{background:rgba(255,255,255,.04);border-color:rgba(127,212,196,.18)}
+.rot{font-family:var(--disp);font-weight:700;font-size:clamp(1.05rem,1.7vw,1.35rem);letter-spacing:-.01em}
+.rot.ok{color:var(--ok-dk)}.rot.warn{color:var(--warn-dk)}.rot.crit{color:var(--crit-dk)}.rot.info{color:var(--brand)}
+ul.clean{list-style:none;margin-top:.9rem;display:flex;flex-direction:column;gap:.6rem}
+ul.clean li{position:relative;padding-left:1.4rem;font-size:clamp(.85rem,1.25vw,1rem);line-height:1.35;color:var(--ink)}
+ul.clean li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:2px;background:var(--brand)}
+ul.clean li.strong{font-weight:700}
+ul.clean.ok li::before{background:var(--ok-dk)}
+ul.clean.warn li::before{background:var(--warn-dk)}
+
+/* índice numerado en círculo — motivo repetido del menú de la app */
+.idx{width:clamp(2.6rem,4vw,3.4rem);height:clamp(2.6rem,4vw,3.4rem);border-radius:50%;
+  background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:600;font-size:clamp(.9rem,1.5vw,1.2rem);flex:none}
+.idx.warn{background:var(--warn-dk)}.idx.crit{background:var(--crit-dk)}.idx.ok{background:var(--ok-dk)}
+.idx.ghost{background:rgba(127,212,196,.16);color:var(--mint)}
+
+/* ── cifras enfrentadas ── */
+.cifras{display:flex;align-items:stretch;gap:clamp(1rem,2vw,1.6rem)}
+.cifra{flex:1;border-radius:16px;padding:clamp(1.2rem,2.4vw,2rem);border:1px solid var(--line);background:#fff}
+.cifra.mint{background:linear-gradient(150deg,#0E3339,#0A2529);border-color:var(--line-dk)}
+.cifra .cr{font-family:var(--mono);font-size:.8rem;letter-spacing:.05em;color:var(--ink3)}
+.cifra.mint .cr{color:var(--mint-dim)}
+.cifra .cv{font-family:var(--disp);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(3rem,8vw,5.6rem);line-height:1;color:var(--ink);margin:.2rem 0}
+.cifra.mint .cv{color:var(--mint)}
+.cifra .cu{font-size:.92rem;color:var(--ink2)}.cifra.mint .cu{color:#9FC1BD}
+.eq{display:flex;align-items:center;font-family:var(--disp);font-weight:800;
+  font-size:clamp(1.8rem,3.5vw,3rem);color:var(--ink3)}
+.sellos{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1.4rem}
+.sello{font-family:var(--mono);font-size:clamp(.72rem,1.15vw,.9rem);background:var(--deep);color:var(--mint);
+  border:1px solid var(--line-dk);border-radius:99px;padding:.4rem .95rem;font-weight:500}
+.slide.light .sello{background:#E7F1F1;color:var(--brand);border-color:#CADEDE}
+
+/* ── flujo ── */
+.flowrow{display:flex;align-items:stretch;gap:.5rem;margin-top:.4rem}
+.step{flex:1;background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:clamp(.8rem,1.5vw,1.2rem);display:flex;flex-direction:column;align-items:center;text-align:center;gap:.5rem}
+.step .st{font-family:var(--disp);font-weight:700;font-size:clamp(.95rem,1.5vw,1.2rem);color:var(--brand)}
+.step .st.crit{color:var(--crit-dk)}.step .st.ok{color:var(--ok-dk)}
+.step .sx{font-size:clamp(.72rem,1.1vw,.9rem);color:var(--ink2);line-height:1.3}
+.arrow{display:flex;align-items:center;color:var(--ink3);font-size:1.5rem;font-weight:300}
+
+/* ── barra de balance (gráfico nativo, la firma) ── */
+.chartwrap{display:flex;flex-direction:column;gap:.55rem;margin-top:.3rem}
+.bar-row{display:grid;grid-template-columns:8.5rem 1fr;align-items:center;gap:.8rem}
+.bar-row .bn{font-size:clamp(.78rem,1.2vw,.98rem);color:var(--ink);text-align:right;font-weight:500}
+.bar-track{position:relative;height:clamp(1.5rem,2.6vw,2rem);background:linear-gradient(90deg,#F0E3E2 0 50%,#E3EEEC 50% 100%);border-radius:6px}
+.bar-track .axis{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--ink3);opacity:.5}
+.bar-fill{position:absolute;top:0;bottom:0;display:flex;align-items:center;border-radius:5px}
+.bar-fill.pos{left:50%;background:linear-gradient(90deg,var(--brand),var(--brand-lite));justify-content:flex-end;padding-right:.5rem;color:#fff}
+.bar-fill.neg{right:50%;background:linear-gradient(90deg,var(--crit),var(--crit-dk));justify-content:flex-start;padding-left:.5rem;color:#fff}
+.bar-fill .bv{font-family:var(--mono);font-size:clamp(.66rem,1vw,.82rem);font-weight:500}
+.axlabel{grid-column:2;font-family:var(--mono);font-size:.7rem;color:var(--ink3);display:flex;justify-content:space-between;margin-top:.1rem}
+
+/* ── consola de cálculo ── */
+.console{background:#06181B;border:1px solid var(--line-dk);border-radius:14px;
+  padding:clamp(1rem,1.8vw,1.4rem);font-family:var(--mono);font-size:clamp(.78rem,1.2vw,.98rem);line-height:1.7}
+.console .base{color:#DCEAE8}.console .tenue{color:#5F827E;font-size:.86em}
+.console .acento{color:var(--mint);font-weight:500}
+
+/* aviso embebido en tarjeta */
+.aviso{border-radius:11px;padding:.75rem .9rem;margin-top:1rem;font-size:clamp(.78rem,1.15vw,.95rem);line-height:1.4}
+.aviso.warn{background:#FBF3E1}.aviso.info{background:#E7F1F1}.aviso.crit{background:#FCEBE9}.aviso.ok{background:#EAF6EF}
+.aviso b.warn{color:var(--warn-dk)}.aviso b.info{color:var(--brand)}.aviso b.crit{color:var(--crit-dk)}.aviso b.ok{color:var(--ok-dk)}
+
+/* semáforo (lámina alerta) */
+.semrow{display:flex;align-items:center;gap:.8rem;border-radius:11px;padding:.7rem .95rem;margin-top:.7rem;font-size:clamp(.82rem,1.25vw,1rem)}
+.semrow.ok{background:#EAF6EF}.semrow.crit{background:#FCEBE9}
+.semrow .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.semrow.ok .dot{background:var(--ok-dk)}.semrow.crit .dot{background:var(--crit-dk)}
+.semrow .act{margin-left:auto;font-weight:700}
+.semrow.ok .act{color:var(--ok-dk)}.semrow.crit .act{color:var(--crit-dk)}
+.cifrabox{background:linear-gradient(155deg,#0E3339,#061A1D);border-radius:16px;padding:clamp(1.2rem,2.4vw,1.8rem);
+  display:flex;flex-direction:column;justify-content:center;color:#EAF3F2;border:1px solid var(--line-dk)}
+.cifrabox .pre{color:#9FC1BD;font-size:clamp(.85rem,1.3vw,1.02rem);line-height:1.35}
+.cifrabox .big2{font-family:var(--disp);font-weight:800;font-size:clamp(3rem,7vw,5rem);color:var(--mint);line-height:1;margin:.3rem 0}
+.cifrabox .aft{font-weight:700;font-size:clamp(1rem,1.5vw,1.2rem);color:#fff}
+.cifrabox .nt{color:#84A7A3;font-style:italic;font-size:clamp(.78rem,1.15vw,.92rem);margin-top:.7rem;line-height:1.4}
+
+/* pendientes */
+.pendcard{display:flex;gap:.85rem;align-items:flex-start}
+.pendcard .pdot{width:14px;height:14px;border-radius:50%;margin-top:.35rem;flex:none}
+.pdot.crit{background:var(--crit-dk)}.pdot.warn{background:var(--warn-dk)}.pdot.mint{background:var(--brand)}
+.pendcard .ph{font-family:var(--disp);font-weight:700;font-size:clamp(1rem,1.5vw,1.25rem)}
+.ph.crit{color:var(--crit-dk)}.ph.warn{color:var(--warn-dk)}.ph.mint{color:var(--brand)}
+.pendcard .px{font-size:clamp(.8rem,1.2vw,.96rem);color:var(--ink2);line-height:1.35;margin-top:.15rem}
+
+/* cierre */
+.cierre h1.t{font-size:clamp(1.9rem,4.2vw,3.4rem);max-width:20ch}
+.cierre .baj{color:var(--mint-dim);font-family:var(--disp);font-style:italic;
+  font-size:clamp(1rem,1.7vw,1.35rem);margin-top:1.4rem;max-width:52ch;line-height:1.4}
+.cierre .rem{color:#CBE1DE;font-size:clamp(.95rem,1.5vw,1.15rem);margin-top:.8rem;font-weight:600}
+
+/* split cifra (por estamento) */
+.mintbox{background:linear-gradient(155deg,#0E3339,#061A1D);border-radius:16px;padding:clamp(1.2rem,2.2vw,1.7rem);
+  color:#EAF3F2;border:1px solid var(--line-dk);display:flex;flex-direction:column}
+.mintbox .mr{font-family:var(--disp);font-weight:700;font-size:clamp(1.05rem,1.6vw,1.3rem);color:#fff}
+.mintbox .ms{color:#9FC1BD;font-size:clamp(.82rem,1.2vw,.98rem);margin-top:.3rem}
+.mintbox .mv{font-family:var(--disp);font-weight:800;font-size:clamp(3rem,6.5vw,4.6rem);color:var(--mint);line-height:1;margin:.5rem 0 .2rem}
+.mintbox .mt{font-size:clamp(.92rem,1.4vw,1.12rem);color:#fff}
+.mintbox .mn{color:#84A7A3;font-style:italic;font-size:clamp(.78rem,1.15vw,.92rem);margin-top:.7rem;line-height:1.4}
+
+/* remate a pie de lámina */
+.footremate{border-radius:12px;padding:.8rem 1.1rem;font-size:clamp(.82rem,1.25vw,1.02rem);
+  text-align:center;font-weight:600;line-height:1.4}
+.footremate.crit{background:#FCEBE9;color:var(--crit-dk)}
+.footremate.ok{background:#EAF6EF;color:var(--ok-dk)}
+.footremate.plain{color:var(--ink2);font-style:italic;font-weight:500}
+
+/* campos con viñeta circular */
+.field{display:flex;gap:.7rem;align-items:flex-start;margin-top:.75rem}
+.field .fd{width:.75rem;height:.75rem;border-radius:50%;background:var(--brand);margin-top:.3rem;flex:none}
+.field .fh{font-weight:700;font-size:clamp(.9rem,1.35vw,1.08rem);color:var(--brand)}
+.field .fx{font-size:clamp(.8rem,1.2vw,.96rem);color:var(--ink2);line-height:1.3}
+
+/* ── chrome: progreso, navegación, notas ── */
+#bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--mint));z-index:50;transition:width .4s ease}
+#hud{position:fixed;bottom:14px;right:18px;z-index:50;display:flex;align-items:center;gap:12px;
+  font-family:var(--mono);font-size:.72rem;color:#4A6E6A}
+#hud button{background:rgba(255,255,255,.06);border:1px solid rgba(127,212,196,.22);color:#9FC1BD;
+  width:30px;height:30px;border-radius:8px;font-size:.9rem;cursor:pointer;transition:.15s}
+#hud button:hover{background:rgba(127,212,196,.16);color:#fff}
+#hud #count{min-width:3.4rem;text-align:center}
+#notes{position:fixed;left:0;right:0;bottom:0;z-index:49;background:rgba(4,12,13,.96);
+  color:#CBE1DE;border-top:1px solid rgba(127,212,196,.2);padding:1rem 1.4rem 3rem;
+  font-size:.92rem;line-height:1.5;max-height:42vh;overflow:auto;transform:translateY(100%);
+  transition:transform .3s ease;white-space:pre-wrap}
+#notes.on{transform:none}
+#notes .nh{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:#5BAEA2;margin-bottom:.5rem}
+#hint{position:fixed;bottom:14px;left:18px;z-index:50;font-family:var(--mono);font-size:.68rem;color:#3A5C58}
+@media (max-width:640px){#hint{display:none}}
+@media (prefers-reduced-motion:reduce){.slide{transition:opacity .01s}}
+@media print{.slide{position:relative;page-break-after:always;opacity:1!important;visibility:visible!important;transform:none!important;
+  width:100%;height:auto;aspect-ratio:16/9;box-shadow:none;border-radius:0}#bar,#hud,#notes,#hint{display:none!important}
+  #stage{display:block;position:static}body{overflow:visible}}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div id="stage">
+<section class="slide dark" data-i="0"><div class="pad cover">
+      <div class="wm">A</div>
+      <div class="spacer"></div>
+      <div class="brand">Program<em>APS</em></div>
+      <div class="sub">Cómo programar el año de nuestro CESFAM</div>
+      <div class="baj">Una herramienta para decidir con las horas que realmente tenemos</div>
+      <div class="balance-sig"><div class="neg"></div><div class="mid"></div><div class="pos"></div></div>
+      <div class="spacer"></div>
+      <div class="foot">Departamento de Salud Coquimbo · CESFAM Tongoy y Posta Guanaqueros</div>
+    </div></section>
+<section class="slide dark" data-i="1"><div class="pad">
+      <div class="blob" style="width:44vh;height:44vh;left:-12vh;bottom:-14vh"></div>
+      <div class="spacer"></div>
+      <div class="kicker">Una pregunta, antes de mostrar nada</div>
+      <h1 class="big" style="margin-top:1rem;max-width:20ch">¿Cuántas horas de médico necesitamos el próximo año?</h1>
+      <div class="qremate" style="color:var(--mint)">¿Y cómo lo sabemos?</div>
+      <div class="spacer"></div>
+    </div></section>
+<section class="slide light" data-i="2"><div class="pad">
+      <div class="kicker">De dónde venimos</div>
+      <h1 class="t">Ya teníamos la respuesta</h1>
+      <div class="bajada" style="margin-bottom:1.3rem">Estaba en una planilla Excel que calcula bien. El problema nunca fue el cálculo.</div>
+      <div class="grid g2" style="flex:1;align-content:center"><div class="card tint-ok"><div class="rot ok">Lo que hacía bien</div><ul class="clean ok"><li class="">Estima la demanda desde la población real</li><li class="">Convierte esa demanda en horas por estamento</li><li class="">Compara lo que se necesita con lo que hay</li><li class="">236 prestaciones, todos los ciclos vitales</li><li class="strong">Es un buen modelo técnico. De verdad.</li></ul></div><div class="card tint-warn"><div class="rot warn">Lo que costaba</div><ul class="clean warn"><li class="">Hojas ocultas: nadie veía los supuestos</li><li class="">Fórmulas que se rompen con un Suprimir</li><li class="">Horas que aparecían como «-1 day, 23:25»</li><li class="">RUN y nombres de 78 personas dando vueltas</li><li class="strong">Reglas que solo vivían en la cabeza de quien la hizo</li></ul></div></div>
+    </div></section>
+<section class="slide light" data-i="3"><div class="pad">
+      <div class="kicker">La prueba</div>
+      <h1 class="t">¿Y cómo sabemos que calcula bien?</h1>
+      <div class="bajada" style="margin-bottom:1.4rem">Le pedimos a la app el mismo ejercicio que hizo la planilla, con los mismos datos.</div>
+      <div class="cifras"><div class="cifra"><div class="cr">La planilla Excel</div><div class="cv">480,84</div><div class="cu">horas clínicas por semana</div></div><div class="eq">=</div><div class="cifra mint"><div class="cr">ProgramAPS</div><div class="cv">480,84</div><div class="cu">horas clínicas por semana</div></div></div>
+      <div class="sellos"><span class="sello">236 de 236 prestaciones</span><span class="sello">14 de 14 estamentos</span><span class="sello">diferencia: cero</span></div>
+      <div class="spacer"></div>
+      <div class="remate" style="text-align:center">Es el mismo modelo de siempre. Lo único que cambia es que ahora se puede mirar por dentro.</div>
+    </div></section>
+<section class="slide light" data-i="4"><div class="pad">
+      <div class="kicker">Antes de partir</div>
+      <h1 class="t">Tres cosas y ya puedes usarla</h1>
+      <div class="grid g3" style="flex:1;align-content:center;margin:1rem 0"><div class="card"><div class="idx">1</div><div class="rot" style="margin-top:1rem">No la puedes romper</div><div class="px" style="margin-top:.5rem;color:var(--ink2);font-size:clamp(.82rem,1.2vw,.98rem);line-height:1.4">No hay fórmulas que dañar. Si algo queda mal, cierras sin guardar y todo vuelve al inicio. Prueba sin miedo.</div></div><div class="card"><div class="idx">2</div><div class="rot" style="margin-top:1rem">Se recalcula sola</div><div class="px" style="margin-top:.5rem;color:var(--ink2);font-size:clamp(.82rem,1.2vw,.98rem);line-height:1.4">Cambias un dato y todo el resto se ajusta al instante. No existe el botón «calcular».</div></div><div class="card"><div class="idx">3</div><div class="rot" style="margin-top:1rem">Guarda al terminar</div><div class="px" style="margin-top:.5rem;color:var(--ink2);font-size:clamp(.82rem,1.2vw,.98rem);line-height:1.4">Botón «Guardar proyecto». Se descarga un archivo: ese archivo es tu trabajo.</div></div></div>
+      <div class="footremate ok">Abrir el archivo es hacerle doble clic. Se abre en el navegador, como una página web. No hay que instalar nada.</div>
+    </div></section>
+<section class="slide light" data-i="5"><div class="pad">
+      <div class="kicker">El mapa</div>
+      <h1 class="t">El camino completo</h1>
+      <div class="bajada" style="margin-bottom:1.2rem">El menú está numerado del 00 al 10. Ese es el orden: de arriba hacia abajo.</div>
+      <div class="flowrow" style="flex:1;align-items:center"><div class="step"><div class="idx ">01</div><div class="st ">Parámetros</div><div class="sx">Cuántos días vamos a trabajar</div></div><div class="arrow">›</div><div class="step"><div class="idx ">02</div><div class="st ">Población</div><div class="sx">A cuánta gente tenemos que atender</div></div><div class="arrow">›</div><div class="step"><div class="idx ">04</div><div class="st ">Equipo</div><div class="sx">Cuántas horas reales tenemos</div></div><div class="arrow">›</div><div class="step"><div class="idx ">06</div><div class="st ">Cartera</div><div class="sx">Qué nos comprometemos a hacer</div></div><div class="arrow">›</div><div class="step"><div class="idx crit">07</div><div class="st crit">Resultados</div><div class="sx">¿Alcanza o no alcanza?</div></div><div class="arrow">›</div><div class="step"><div class="idx ok">10</div><div class="st ok">Informe</div><div class="sx">Para llevarlo a la reunión</div></div></div>
+      <div class="footremate plain" style="margin-top:1.1rem">Es la misma historia de siempre: la gente que tenemos → el equipo que tenemos → lo que prometemos hacer → si nos da el cuero.</div>
+    </div></section>
+<section class="slide light" data-i="6"><div class="pad">
+      <div class="kicker">Paso 1 y 2</div>
+      <h1 class="t">Primero: el tiempo y la gente</h1>
+      <div class="bajada" style="margin-bottom:1.2rem">Los dos datos de los que depende todo lo demás.</div>
+      <div class="grid g2" style="flex:1;align-content:center"><div class="card"><div style="display:flex;align-items:center;gap:.8rem"><div class="idx">01</div><div class="rot">Parámetros</div></div><ul class="clean"><li>Nombre del centro y año a programar</li><li>Días hábiles, menos vacaciones, PAC y permisos</li><li>La app te muestra los días y semanas reales</li></ul><div class="aviso warn"><b class="warn">Ojo con el ausentismo.</b> Viene en 8 %: son las horas que se pierden por licencias e imprevistos. Si lo dejas en 0, la app te dirá que tienes más horas de las que vas a tener.</div></div><div class="card"><div style="display:flex;align-items:center;gap:.8rem"><div class="idx">02</div><div class="rot">Población</div></div><ul class="clean"><li>Tu gente inscrita, por edad y sexo</li><li>Viene cargado el per cápita 2026: 11.273 personas</li><li>Para usar el tuyo: «Importar desde Excel/CSV»</li></ul><div class="aviso info"><b class="info">Este es el punto de partida de todo.</b> Cada prestación saca de aquí su población: si esta tabla está mal, todo lo demás estará mal.</div></div></div>
+    </div></section>
+<section class="slide light" data-i="7"><div class="pad">
+      <div class="kicker" style="color:var(--crit-dk)">Atención</div>
+      <h1 class="t">Si no eres de Tongoy: este paso no se salta</h1>
+      <div class="bajada" style="margin-bottom:1.1rem">Está en el módulo 02, bajo la tabla de población.</div>
+      <div class="grid" style="grid-template-columns:1.55fr 1fr;flex:1;align-content:center">
+        <div class="card">
+          <div class="rot" style="margin-bottom:.4rem">Muchas prestaciones traen cifras fijas del REM de Tongoy</div>
+          <div class="px" style="color:var(--ink2);font-size:clamp(.82rem,1.2vw,.98rem);line-height:1.45">Por ejemplo: «3.879 consultas de morbilidad al año». Ese número no se ajusta solo cuando cambias la población, porque no salió del per cápita: salió del registro de lo que efectivamente se hizo, aquí.</div>
+          <div class="semrow ok"><span class="dot"></span><span>Si el recuadro dice «al día» en verde</span><span class="act">→ sigue tranquilo</span></div><div class="semrow crit"><span class="dot"></span><span>Si dice «requiere acción» en rojo</span><span class="act">→ elige «Por estructura de población» y aprieta el botón</span></div>
+        </div>
+        <div class="cifrabox">
+          <div class="pre">Si no lo haces, la app subestima hasta</div>
+          <div class="big2">45,8 %</div>
+          <div class="aft">de tu demanda real.</div>
+          <div class="nt">Y el balance se ve tranquilizador, que es lo peligroso: programarías con la mitad de las horas que necesitas, sin que nada te avise.</div>
+        </div>
+      </div>
+    </div></section>
+<section class="slide light" data-i="8"><div class="pad">
+      <div class="kicker">Pasos 3, 4 y 5</div>
+      <h1 class="t">Después: con qué contamos</h1>
+      <div class="bajada" style="margin-bottom:1rem">Los sectores, la gente y las salas.</div>
+      <div class="grid g3" style="flex:1;align-content:center"><div class="card"><div style="display:flex;align-items:center;gap:.75rem"><div class="idx ">03</div><div class="rot ">Sectores</div></div><div class="px" style="margin-top:.9rem;color:var(--ink2);font-size:clamp(.8rem,1.15vw,.95rem);line-height:1.4">¿Trabajas por sectores?<br><br>Si no sectorizas, no toques nada y sigue de largo.<br><br>Si sectorizas, pon qué porcentaje de la población le toca a cada uno. Deben sumar 100 %: la app te avisa si no cuadra.</div></div><div class="card"><div style="display:flex;align-items:center;gap:.75rem"><div class="idx ">04</div><div class="rot ">Equipo</div></div><div class="px" style="margin-top:.9rem;color:var(--ink2);font-size:clamp(.8rem,1.15vw,.95rem);line-height:1.4">Cada persona: jornada, horas de administración y de reuniones.<br><br>La última columna la calcula la app: lo que realmente le queda para atender público.<br><br>Vienen los 78 funcionarios, sin nombres.</div></div><div class="card"><div style="display:flex;align-items:center;gap:.75rem"><div class="idx warn">05</div><div class="rot warn">Box</div></div><div class="px" style="margin-top:.9rem;color:var(--ink2);font-size:clamp(.8rem,1.15vw,.95rem);line-height:1.4">Cuántas salas hay y cuántas horas está abierta cada una.<br><br>Ojo: estos números son un supuesto, porque la planilla no los registraba. Hay que corregirlos con lo que realmente tenemos.</div></div></div>
+      <div class="footremate crit" style="margin-top:1rem">Si a alguien le sale el cartel rojo «sobreasignado», no es un error del programa: esa persona tiene más horas de papeleo y reuniones que horas de contrato. Es un problema real, y ahora se ve.</div>
+    </div></section>
+<section class="slide light" data-i="9"><div class="pad">
+      <div class="kicker">El corazón</div>
+      <h1 class="t">Qué nos comprometemos a hacer</h1>
+      <div class="bajada" style="margin-bottom:1rem">Módulo 06. Vienen 236 prestaciones cargadas, de todos los ciclos vitales.</div>
+      <div class="grid g2" style="flex:1;align-content:center">
+        <div class="card"><div class="rot" style="font-size:clamp(1rem,1.5vw,1.2rem)">Haz clic en una prestación y se abre el detalle</div><div class="field"><div class="fd"></div><div><span class="fh">Cobertura</span><div class="fx">A qué parte de la gente vamos a llegar. Se escribe en decimales: 0.8 es 80 %.</div></div></div><div class="field"><div class="fd"></div><div><span class="fh">Concentración</span><div class="fx">Cuántas veces al año atendemos a cada persona.</div></div></div><div class="field"><div class="fd"></div><div><span class="fh">Quién la hace</span><div class="fx">El estamento, qué porcentaje le toca y cuántos minutos dura la atención.</div></div></div>
+          <div class="px" style="margin-top:1rem;color:var(--ink3);font-style:italic;font-size:.85rem">Usa los filtros de arriba para no perderte entre 236 filas.</div></div>
+        <div class="card tint-info"><div class="rot info" style="margin-bottom:.7rem">Y abajo, el cálculo en palabras</div>
+          <div class="console"><div class="base">Población objetivo = 1.357</div><div class="tenue">(per cápita, mujeres de 45 a 64 años)</div><div class="base">&nbsp;</div><div class="base">Total a trabajar =</div><div class="acento">1.357 × 1,15 × 1,0 = 1.561</div><div class="tenue">atenciones al año</div><div class="base">&nbsp;</div><div class="acento">Carga total = 12,4 h/semana</div></div>
+          <div class="px" style="margin-top:.8rem;font-weight:700;color:var(--brand)">Si un número te parece raro, aquí ves de dónde salió.</div></div>
+      </div>
+    </div></section>
+<section class="slide light" data-i="10"><div class="pad">
+      <div class="kicker">La respuesta</div>
+      <h1 class="t">¿Alcanza o no alcanza?</h1>
+      <div class="bajada" style="margin-bottom:.8rem">Módulo 07. Una barra por estamento: a la derecha sobra, a la izquierda falta.</div>
+      <div class="grid" style="grid-template-columns:1.7fr 1fr;flex:1;align-content:center">
+        <div>
+          <div class="chartwrap"><div class="bar-row"><div class="bn">Enfermero(a)</div><div class="bar-track"><div class="axis"></div><div class="bar-fill pos" style="width:48.0%"><span class="bv">+183.8</span></div></div></div><div class="bar-row"><div class="bn">Kinesiólogo(a)</div><div class="bar-track"><div class="axis"></div><div class="bar-fill pos" style="width:46.7%"><span class="bv">+178.7</span></div></div></div><div class="bar-row"><div class="bn">Psicólogo(a)</div><div class="bar-track"><div class="axis"></div><div class="bar-fill pos" style="width:19.6%"><span class="bv">+75.1</span></div></div></div><div class="bar-row"><div class="bn">Nutricionista</div><div class="bar-track"><div class="axis"></div><div class="bar-fill pos" style="width:19.0%"><span class="bv">+72.6</span></div></div></div><div class="bar-row"><div class="bn">Matrón(a)</div><div class="bar-track"><div class="axis"></div><div class="bar-fill pos" style="width:12.4%"><span class="bv">+47.6</span></div></div></div><div class="bar-row"><div class="bn">Médico</div><div class="bar-track"><div class="axis"></div><div class="bar-fill pos" style="width:2.2%"><span class="bv">+8.4</span></div></div></div><div class="bar-row"><div class="bn">Odontólogo(a)</div><div class="bar-track"><div class="axis"></div><div class="bar-fill neg" style="width:3.3%"><span class="bv">-12.7</span></div></div></div></div>
+          <div class="axlabel"><span>← faltan horas · déficit</span><span>horas por semana</span><span>sobran horas · superávit →</span></div>
+        </div>
+        <div class="card tint-crit">
+          <div class="rot crit" style="font-size:clamp(1.05rem,1.6vw,1.35rem)">Barra roja = hay un problema</div>
+          <div class="px" style="margin-top:.6rem;color:var(--ink);font-size:clamp(.82rem,1.2vw,.98rem);line-height:1.4">Odontología necesita 12,7 horas semanales más de las que tiene. Con la dotación actual, esa cartera no se puede cumplir completa.</div>
+          <div class="remate" style="margin-top:.7rem;font-size:clamp(.82rem,1.2vw,.98rem)">No es una opinión ni una impresión: es aritmética, y ahora está a la vista de todos.</div>
+          <div style="background:#fff;border-radius:10px;padding:.7rem .9rem;margin-top:.9rem;font-weight:700;color:var(--brand);font-size:clamp(.78rem,1.1vw,.92rem)">Haz clic en cualquier barra y te lleva al detalle de ese estamento.</div>
+        </div>
+      </div>
+    </div></section>
+<section class="slide light" data-i="11"><div class="pad">
+      <div class="kicker">Para cada referente</div>
+      <h1 class="t">Cada uno puede ver lo suyo</h1>
+      <div class="bajada" style="margin-bottom:1.1rem">Módulo 08. La vista que responde: ¿qué me toca a mí y me alcanzan las horas?</div>
+      <div class="grid g2" style="flex:1;align-content:center">
+        <div class="card"><div style="display:flex;align-items:center;gap:.8rem"><div class="idx">08</div>
+          <div class="rot">Eliges tu estamento arriba</div></div><ul class="clean"><li>Cuántas personas tiene y cuántas horas reales</li><li>Todas las prestaciones que le asignaron</li><li>Cuántas horas exige cada una</li><li>Si le alcanza o no</li><li>Puedes bajar la tabla a Excel</li></ul>
+          <div class="aviso info"><b class="info">Haz clic en cualquier prestación para corregirla al vuelo.</b></div></div>
+        <div class="mintbox"><div class="mr">El gráfico que más sirve</div><div class="ms">Ordena tus prestaciones de mayor a menor carga.</div>
+          <div class="mv">3 o 4</div><div class="mt">prestaciones suelen concentrar la mitad de todo tu trabajo.</div><div class="mn">Ahí es donde vale la pena discutir cobertura y rendimiento. Discutir las de la cola es gastar reunión.</div></div>
+      </div>
+    </div></section>
+<section class="slide light" data-i="12"><div class="pad">
+      <div class="kicker">Simulación</div>
+      <h1 class="t">Probar sin miedo</h1>
+      <div class="bajada" style="margin-bottom:1.2rem">Módulo 09. ¿Y si contratamos otro médico? ¿Y si subimos la cobertura?</div>
+      <div class="flowrow" style="flex:1;align-items:center"><div class="step"><div class="idx ">1</div><div class="st ">Duplicar</div><div class="sx">Botón «Duplicar escenario activo»</div></div><div class="arrow">›</div><div class="step"><div class="idx ">2</div><div class="st ">Nombrar</div><div class="sx">«Con 2 médicos más»</div></div><div class="arrow">›</div><div class="step"><div class="idx ">3</div><div class="st ">Cambiar</div><div class="sx">Modifica lo que quieras en cualquier módulo</div></div><div class="arrow">›</div><div class="step"><div class="idx ">4</div><div class="st ">Comparar</div><div class="sx">Vuelve y los ves lado a lado</div></div></div>
+      <div class="footremate ok" style="margin-top:1.1rem">Tu escenario original queda intacto. Esto es lo que convierte una discusión de pasillo sobre dotación en una conversación con números.</div>
+    </div></section>
+<section class="slide light" data-i="13"><div class="pad">
+      <div class="kicker">El cierre del ejercicio</div>
+      <h1 class="t">Y al final, el informe</h1>
+      <div class="bajada" style="margin-bottom:1.2rem">Módulo 10. Un botón.</div>
+      <div class="grid g2" style="flex:1;align-content:center"><div class="card"><div style="display:flex;align-items:center;gap:.8rem"><div class="idx">10</div><div class="rot">Generar informe</div></div><ul class="clean"><li>Los insumos que usamos</li><li>Los supuestos que asumimos</li><li>Los resultados y las brechas</li><li>Las recomendaciones</li></ul><div class="aviso info"><b class="info">Imprimir o guardar como PDF.</b> Lo llevas a una reunión o lo adjuntas a un oficio.</div></div><div class="card"><div style="display:flex;align-items:center;gap:.8rem"><div class="idx">↓</div><div class="rot">Guardar tu trabajo</div></div><ul class="clean"><li>Botón «Guardar proyecto» en el menú izquierdo</li><li>Se descarga un archivo</li><li>Ese archivo tiene todo: tus datos, tus escenarios, tus decisiones</li></ul><div class="aviso warn"><b class="warn">No se guarda sola, y es a propósito.</b> Tú decides qué versión conservar y con qué nombre. Así queda constancia de cada ejercicio. Nada de esto sale de tu computador.</div></div></div>
+    </div></section>
+<section class="slide dark" data-i="14"><div class="pad">
+      <div class="blob" style="width:44vh;height:44vh;left:-12vh;bottom:-14vh"></div>
+      <div class="spacer"></div>
+      <div class="kicker">Lo único que hay que entender</div>
+      <h1 class="big" style="margin-top:1rem;max-width:20ch">Programar es decidir.</h1>
+      <div class="big two" style="margin-top:.3rem">Y las decisiones tienen aritmética.</div><div class="qbody">Cambiar una cobertura de 1,0 a 0,8 no es mover un número en una planilla: es decidir a cuánta gente vamos a llegar. La herramienta no toma esa decisión. Solo muestra, al instante, lo que cuesta.</div><div class="qremate">La app no reemplaza el criterio técnico del equipo. Lo hace visible, y por eso discutible.</div>
+      <div class="spacer"></div>
+    </div></section>
+<section class="slide light" data-i="15"><div class="pad">
+      <div class="kicker">Honestidad</div>
+      <h1 class="t">Lo que todavía nos falta</h1>
+      <div class="bajada" style="margin-bottom:1rem">Decirlo nosotros antes de que lo descubra otro.</div>
+      <div class="grid g2" style="flex:1;align-content:center"><div class="card pendcard"><div class="pdot crit"></div><div><div class="ph crit">Los box</div><div class="px">Las salas y sus horarios son un supuesto. Hay que levantar el dato real de nuestro centro.</div></div></div><div class="card pendcard"><div class="pdot warn"></div><div><div class="ph warn">El ausentismo</div><div class="px">El 8 % es un valor genérico. Podemos calcularlo con nuestras licencias reales.</div></div></div><div class="card pendcard"><div class="pdot warn"></div><div><div class="ph warn">Las coberturas</div><div class="px">Vienen del ejercicio 2023. Hay que contrastarlas con las Orientaciones del año que programamos.</div></div></div><div class="card pendcard"><div class="pdot mint"></div><div><div class="ph mint">El REM propio</div><div class="px">Adaptar la cartera es transitorio. Lo definitivo es cargar nuestro propio REM, prestación por prestación.</div></div></div></div>
+      <div class="footremate plain" style="margin-top:1rem">Ninguno de estos pendientes afecta el cálculo, que está verificado. Son datos de entrada, todos a la vista y todos editables. Que estén declarados es lo que diferencia esta herramienta de la planilla que reemplaza.</div>
+    </div></section>
+<section class="slide dark" data-i="16"><div class="pad cierre">
+      <div class="blob" style="width:52vh;height:52vh;right:-14vh;bottom:-16vh"></div>
+      <div class="spacer"></div>
+      <div class="kicker">Para qué sirve todo esto</div>
+      <h1 class="t">Cada brecha que esta herramienta hace visible es una conversación que antes ocurría a ciegas.</h1>
+      <div class="baj">Programar bien no es llenar una planilla: es decidir, con horas contadas y población real, a quién alcanzamos a cuidar.</div>
+      <div class="rem">Que el cálculo sea transparente es, al final, un asunto de equidad.</div>
+      <div class="spacer"></div>
+    </div></section>
+</div>
+<div id="hint">← → navegar · N notas · F pantalla completa</div>
+<div id="hud">
+  <button id="prev" aria-label="Anterior">‹</button>
+  <span id="count">1 / 17</span>
+  <button id="next" aria-label="Siguiente">›</button>
+  <button id="tnotes" aria-label="Notas del orador">N</button>
+</div>
+<div id="notes"><div class="nh">Notas del orador</div><div id="notes-body"></div></div>
+<script>
+const NOTES=["Abre sin encender el computador. Esta l\u00e1mina solo sirve para que la sala se siente.\n\nNo digas todav\u00eda qu\u00e9 es la herramienta. Parte por la pregunta de la l\u00e1mina siguiente.","MOMENTO CLAVE. Haz la pregunta y C\u00c1LLATE. Deja el silencio inc\u00f3modo.\n\nDeja que alguien intente responder. Casi siempre la respuesta es \u00ablas que tenemos\u00bb o \u00ablas del a\u00f1o pasado\u00bb.\n\nEsa incomodidad instala la necesidad. No la resuelvas t\u00fa: que la sienta la sala.","Frase que ordena la reuni\u00f3n: \u00abNo les traigo un invento. Les traigo lo mismo que ya usamos, pero que se puede revisar.\u00bb\n\nIMPORTANTE: elogia la planilla con sinceridad. Su autor hizo un buen trabajo t\u00e9cnico. Si el equipo percibe que venimos a criticar a un colega, se cierra.\n\nEl problema no fue el c\u00e1lculo: fue que el conocimiento viv\u00eda en una sola cabeza.","Esta l\u00e1mina compra credibilidad ANTES de pedir confianza. No te la saltes.\n\nSi preguntan \u00ab\u00bfy c\u00f3mo saben que no se equivocaron en ambos lados?\u00bb: el motor tambi\u00e9n reproduce exacto la hoja de resumen del propio Excel (49,54 h de enfermer\u00eda), que no particip\u00f3 del c\u00e1lculo. Coincidir con un testigo independiente s\u00ed prueba algo.\n\nNo entres en m\u00e1s detalle t\u00e9cnico salvo que lo pidan.","El \u00abno la puedes romper\u00bb es lo que m\u00e1s tranquiliza. Rep\u00edtelo.\n\nMucha gente teme tocar la planilla original justamente porque S\u00cd se rompe. Ese miedo es real y hay que desactivarlo temprano.\n\nSi puedes, muestra el doble clic en vivo aqu\u00ed.","No expliques botones: cuenta la historia. La frase de abajo es la que se les queda.\n\nLos m\u00f3dulos 03 (sectores), 05 (box), 08 (por estamento) y 09 (escenarios) vienen despu\u00e9s. Aqu\u00ed solo el esqueleto.\n\nSi el equipo entiende este orden, ya entendi\u00f3 la herramienta.","El ausentismo es la primera objeci\u00f3n: \u00ab8 % es inventado\u00bb. Conc\u00e9delo de inmediato: S\u00cd es un supuesto, y por eso es editable y est\u00e1 a la vista.\n\nEl argumento fuerte: la planilla asum\u00eda 0 % sin decirlo. Un supuesto visible se discute; uno escondido se hereda.\n\nSi alguien tiene el dato real de licencias, p\u00eddeselo ah\u00ed mismo.","Esta l\u00e1mina existe porque probamos la herramienta en 5 centros distintos y descubrimos justamente esto.\n\nSi la reuni\u00f3n es solo para Tongoy, p\u00e1sala r\u00e1pido: nuestra cartera ya est\u00e1 al d\u00eda. Pero d\u00e9jala, porque el d\u00eda que la comparta otro CESFAM es el error m\u00e1s caro que se puede cometer.\n\nLo definitivo es cargar el REM propio, prestaci\u00f3n por prestaci\u00f3n. Adaptar es la soluci\u00f3n transitoria.","El cartel \u00absobreasignado\u00bb genera la conversaci\u00f3n m\u00e1s inc\u00f3moda y m\u00e1s \u00fatil de la reuni\u00f3n. En la planilla aparec\u00eda como \u00abdelta negativo\u00bb y nadie lo miraba.\n\nSobre los box: s\u00e9 honesto. Los n\u00fameros son un punto de partida inventado. Pide el dato real como tarea concreta, con responsable y fecha.","Aqu\u00ed la herramienta se gana al equipo t\u00e9cnico: el c\u00e1lculo deja de ser una caja negra.\n\nAbre una prestaci\u00f3n que ellos conozcan bien \u2014control cardiovascular o control prenatal\u2014 no una cualquiera. Que reconozcan sus propios n\u00fameros.\n\nCobertura y concentraci\u00f3n las decide el equipo, no la app. Insiste: la app no decide nada, calcula consecuencias.","Cifras del ejercicio real de Tongoy con el per c\u00e1pita 2026.\n\nM\u00e1s abajo en la app hay un gr\u00e1fico de \u00abcuello de botella\u00bb: dice qu\u00e9 recurso aprieta primero, si un estamento o una sala. Sobre 100 % significa que ya no da m\u00e1s.\n\nSi preguntan \u00ab\u00bfy qu\u00e9 hacemos con odontolog\u00eda?\u00bb: ese es el punto. La app no lo resuelve, lo pone sobre la mesa.","Esta l\u00e1mina le habla directo a los referentes t\u00e9cnicos. Cada uno llega con una sola pregunta: \u00bfqu\u00e9 me toca a m\u00ed?\n\nDato por si lo preguntan: esta vista NO recalcula nada, usa el mismo motor del balance global. Es imposible que el detalle contradiga al total. En una planilla, cada resumen es una f\u00f3rmula distinta que se puede desincronizar.\n\nSi tienes tiempo, abre el estamento de quien est\u00e9 sentado adelante.","Los escenarios son el \u00fanico insumo real para una conversaci\u00f3n sobre dotaci\u00f3n con el DESAM.\n\nEn vez de \u00abnecesitamos m\u00e1s horas de odontolog\u00eda\u00bb, llegas con: \u00abcon 22 horas m\u00e1s de odont\u00f3logo, la brecha se cierra y estas 14 prestaciones se cumplen\u00bb.\n\nEso se discute distinto.","La pregunta \u00ab\u00bflos datos se van a alg\u00fan servidor?\u00bb aparece siempre. Respuesta: no. No hay internet de por medio salvo para dibujar los gr\u00e1ficos la primera vez.\n\nEsto importa porque el archivo original ten\u00eda RUN y nombres de 78 funcionarios. Esta versi\u00f3n viene anonimizada.","AQU\u00cd VA LA DEMO EN VIVO. Es el momento que convence.\n\n1. Abre una prestaci\u00f3n de alta carga en el m\u00f3dulo 06.\n2. Cambia la cobertura de 1.0 a 0.8.\n3. Ve al m\u00f3dulo 07 y que vean la barra moverse.\n4. Vuelve atr\u00e1s.\n\nEse instante \u2014ver el balance reaccionar\u2014 hace m\u00e1s que toda la presentaci\u00f3n. Si solo te alcanza para una cosa, que sea esta.","Esta l\u00e1mina te da autoridad. Nadie conf\u00eda en quien presenta algo sin defectos.\n\nSi listas t\u00fa los pendientes, el equipo deja de buscarlos para pillarte y empieza a ayudarte a resolverlos.\n\nSal de aqu\u00ed con TAREAS CONCRETAS: qui\u00e9n levanta el dato de box, qui\u00e9n saca las licencias, para cu\u00e1ndo.","Cierra con esto y no agregues nada m\u00e1s. No vuelvas a los detalles t\u00e9cnicos.\n\nSi hay preguntas, resp\u00f3ndelas antes de esta l\u00e1mina.\n\n\u00daltima frase antes de apagar el proyector: \u00ab\u00bfQu\u00e9 necesitan de m\u00ed para poder usarla?\u00bb"];
+const slides=[...document.querySelectorAll('.slide')];
+const N=slides.length; let cur=0;
+const bar=document.getElementById('bar'),count=document.getElementById('count'),
+      notes=document.getElementById('notes'),nbody=document.getElementById('notes-body');
+function show(i){
+  cur=Math.max(0,Math.min(N-1,i));
+  slides.forEach((s,k)=>s.classList.toggle('on',k===cur));
+  bar.style.width=((cur+1)/N*100)+'%';
+  count.textContent=(cur+1)+' / '+N;
+  nbody.textContent=NOTES[cur]||'—';
+  location.hash=cur+1;
+}
+function next(){show(cur+1)} function prev(){show(cur-1)}
+document.getElementById('next').onclick=next;
+document.getElementById('prev').onclick=prev;
+document.getElementById('tnotes').onclick=()=>notes.classList.toggle('on');
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')  {e.preventDefault();next();}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp') {e.preventDefault();prev();}
+  else if(e.key==='Home') show(0);
+  else if(e.key==='End') show(N-1);
+  else if(e.key.toLowerCase()==='n') notes.classList.toggle('on');
+  else if(e.key.toLowerCase()==='f'){ if(!document.fullscreenElement)document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+});
+let sx=null;
+addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{ if(sx===null)return; const dx=e.changedTouches[0].clientX-sx;
+  if(Math.abs(dx)>50){dx<0?next():prev();} sx=null; },{passive:true});
+const h=parseInt(location.hash.slice(1)); show(isNaN(h)?0:h-1);
+</script>
+</body>
+</html>

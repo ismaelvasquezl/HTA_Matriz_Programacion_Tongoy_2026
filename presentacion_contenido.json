@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "titulo": "ProgramAPS",
+    "subtitulo": "Cómo programar el año de nuestro CESFAM",
+    "pie": "Departamento de Salud Coquimbo · CESFAM Tongoy y Posta Guanaqueros",
+    "duracion_min": 45
+  },
+  "slides": [
+    {
+      "tipo": "portada",
+      "marca": "Program",
+      "marca_acento": "APS",
+      "titulo": "Cómo programar el año de nuestro CESFAM",
+      "bajada": "Una herramienta para decidir con las horas que realmente tenemos",
+      "notas": "Abre sin encender el computador. Esta lámina solo sirve para que la sala se siente.\n\nNo digas todavía qué es la herramienta. Parte por la pregunta de la lámina siguiente."
+    },
+    {
+      "tipo": "pregunta",
+      "kicker": "Una pregunta, antes de mostrar nada",
+      "titulo": "¿Cuántas horas de médico necesitamos el próximo año?",
+      "remate": "¿Y cómo lo sabemos?",
+      "notas": "MOMENTO CLAVE. Haz la pregunta y CÁLLATE. Deja el silencio incómodo.\n\nDeja que alguien intente responder. Casi siempre la respuesta es «las que tenemos» o «las del año pasado».\n\nEsa incomodidad instala la necesidad. No la resuelvas tú: que la sienta la sala."
+    },
+    {
+      "tipo": "comparar",
+      "kicker": "De dónde venimos",
+      "titulo": "Ya teníamos la respuesta",
+      "bajada": "Estaba en una planilla Excel que calcula bien. El problema nunca fue el cálculo.",
+      "izq": {
+        "rotulo": "Lo que hacía bien",
+        "tono": "ok",
+        "items": [
+          "Estima la demanda desde la población real",
+          "Convierte esa demanda en horas por estamento",
+          "Compara lo que se necesita con lo que hay",
+          "236 prestaciones, todos los ciclos vitales",
+          "Es un buen modelo técnico. De verdad."
+        ]
+      },
+      "der": {
+        "rotulo": "Lo que costaba",
+        "tono": "warn",
+        "items": [
+          "Hojas ocultas: nadie veía los supuestos",
+          "Fórmulas que se rompen con un Suprimir",
+          "Horas que aparecían como «-1 day, 23:25»",
+          "RUN y nombres de 78 personas dando vueltas",
+          "Reglas que solo vivían en la cabeza de quien la hizo"
+        ]
+      },
+      "notas": "Frase que ordena la reunión: «No les traigo un invento. Les traigo lo mismo que ya usamos, pero que se puede revisar.»\n\nIMPORTANTE: elogia la planilla con sinceridad. Su autor hizo un buen trabajo técnico. Si el equipo percibe que venimos a criticar a un colega, se cierra.\n\nEl problema no fue el cálculo: fue que el conocimiento vivía en una sola cabeza."
+    },
+    {
+      "tipo": "cifras",
+      "kicker": "La prueba",
+      "titulo": "¿Y cómo sabemos que calcula bien?",
+      "bajada": "Le pedimos a la app el mismo ejercicio que hizo la planilla, con los mismos datos.",
+      "pares": [
+        {"rotulo": "La planilla Excel", "valor": "480,84", "unidad": "horas clínicas por semana", "tono": "neutro"},
+        {"rotulo": "ProgramAPS", "valor": "480,84", "unidad": "horas clínicas por semana", "tono": "mint"}
+      ],
+      "sellos": ["236 de 236 prestaciones", "14 de 14 estamentos", "diferencia: cero"],
+      "remate": "Es el mismo modelo de siempre. Lo único que cambia es que ahora se puede mirar por dentro.",
+      "notas": "Esta lámina compra credibilidad ANTES de pedir confianza. No te la saltes.\n\nSi preguntan «¿y cómo saben que no se equivocaron en ambos lados?»: el motor también reproduce exacto la hoja de resumen del propio Excel (49,54 h de enfermería), que no participó del cálculo. Coincidir con un testigo independiente sí prueba algo.\n\nNo entres en más detalle técnico salvo que lo pidan."
+    },
+    {
+      "tipo": "tarjetas",
+      "kicker": "Antes de partir",
+      "titulo": "Tres cosas y ya puedes usarla",
+      "tarjetas": [
+        {"n": "1", "titulo": "No la puedes romper", "texto": "No hay fórmulas que dañar. Si algo queda mal, cierras sin guardar y todo vuelve al inicio. Prueba sin miedo."},
+        {"n": "2", "titulo": "Se recalcula sola", "texto": "Cambias un dato y todo el resto se ajusta al instante. No existe el botón «calcular»."},
+        {"n": "3", "titulo": "Guarda al terminar", "texto": "Botón «Guardar proyecto». Se descarga un archivo: ese archivo es tu trabajo."}
+      ],
+      "remate": "Abrir el archivo es hacerle doble clic. Se abre en el navegador, como una página web. No hay que instalar nada.",
+      "notas": "El «no la puedes romper» es lo que más tranquiliza. Repítelo.\n\nMucha gente teme tocar la planilla original justamente porque SÍ se rompe. Ese miedo es real y hay que desactivarlo temprano.\n\nSi puedes, muestra el doble clic en vivo aquí."
+    },
+    {
+      "tipo": "flujo",
+      "kicker": "El mapa",
+      "titulo": "El camino completo",
+      "bajada": "El menú está numerado del 00 al 10. Ese es el orden: de arriba hacia abajo.",
+      "pasos": [
+        {"n": "01", "titulo": "Parámetros", "texto": "Cuántos días vamos a trabajar"},
+        {"n": "02", "titulo": "Población", "texto": "A cuánta gente tenemos que atender"},
+        {"n": "04", "titulo": "Equipo", "texto": "Cuántas horas reales tenemos"},
+        {"n": "06", "titulo": "Cartera", "texto": "Qué nos comprometemos a hacer"},
+        {"n": "07", "titulo": "Resultados", "texto": "¿Alcanza o no alcanza?", "tono": "crit"},
+        {"n": "10", "titulo": "Informe", "texto": "Para llevarlo a la reunión", "tono": "ok"}
+      ],
+      "remate": "Es la misma historia de siempre: la gente que tenemos → el equipo que tenemos → lo que prometemos hacer → si nos da el cuero.",
+      "notas": "No expliques botones: cuenta la historia. La frase de abajo es la que se les queda.\n\nLos módulos 03 (sectores), 05 (box), 08 (por estamento) y 09 (escenarios) vienen después. Aquí solo el esqueleto.\n\nSi el equipo entiende este orden, ya entendió la herramienta."
+    },
+    {
+      "tipo": "dos_modulos",
+      "kicker": "Paso 1 y 2",
+      "titulo": "Primero: el tiempo y la gente",
+      "bajada": "Los dos datos de los que depende todo lo demás.",
+      "modulos": [
+        {
+          "n": "01", "titulo": "Parámetros",
+          "items": ["Nombre del centro y año a programar", "Días hábiles, menos vacaciones, PAC y permisos", "La app te muestra los días y semanas reales"],
+          "aviso": {"tono": "warn", "fuerte": "Ojo con el ausentismo.", "texto": "Viene en 8 %: son las horas que se pierden por licencias e imprevistos. Si lo dejas en 0, la app te dirá que tienes más horas de las que vas a tener."}
+        },
+        {
+          "n": "02", "titulo": "Población",
+          "items": ["Tu gente inscrita, por edad y sexo", "Viene cargado el per cápita 2026: 11.273 personas", "Para usar el tuyo: «Importar desde Excel/CSV»"],
+          "aviso": {"tono": "info", "fuerte": "Este es el punto de partida de todo.", "texto": "Cada prestación saca de aquí su población: si esta tabla está mal, todo lo demás estará mal."}
+        }
+      ],
+      "notas": "El ausentismo es la primera objeción: «8 % es inventado». Concédelo de inmediato: SÍ es un supuesto, y por eso es editable y está a la vista.\n\nEl argumento fuerte: la planilla asumía 0 % sin decirlo. Un supuesto visible se discute; uno escondido se hereda.\n\nSi alguien tiene el dato real de licencias, pídeselo ahí mismo."
+    },
+    {
+      "tipo": "alerta",
+      "kicker": "Atención",
+      "titulo": "Si no eres de Tongoy: este paso no se salta",
+      "bajada": "Está en el módulo 02, bajo la tabla de población.",
+      "explicacion": {
+        "titulo": "Muchas prestaciones traen cifras fijas del REM de Tongoy",
+        "texto": "Por ejemplo: «3.879 consultas de morbilidad al año». Ese número no se ajusta solo cuando cambias la población, porque no salió del per cápita: salió del registro de lo que efectivamente se hizo, aquí."
+      },
+      "semaforo": [
+        {"tono": "ok", "texto": "Si el recuadro dice «al día» en verde", "accion": "sigue tranquilo"},
+        {"tono": "crit", "texto": "Si dice «requiere acción» en rojo", "accion": "elige «Por estructura de población» y aprieta el botón"}
+      ],
+      "cifra": {"antes": "Si no lo haces, la app subestima hasta", "valor": "45,8", "sufijo": "%", "despues": "de tu demanda real.", "nota": "Y el balance se ve tranquilizador, que es lo peligroso: programarías con la mitad de las horas que necesitas, sin que nada te avise."},
+      "notas": "Esta lámina existe porque probamos la herramienta en 5 centros distintos y descubrimos justamente esto.\n\nSi la reunión es solo para Tongoy, pásala rápido: nuestra cartera ya está al día. Pero déjala, porque el día que la comparta otro CESFAM es el error más caro que se puede cometer.\n\nLo definitivo es cargar el REM propio, prestación por prestación. Adaptar es la solución transitoria."
+    },
+    {
+      "tipo": "tres_modulos",
+      "kicker": "Pasos 3, 4 y 5",
+      "titulo": "Después: con qué contamos",
+      "bajada": "Los sectores, la gente y las salas.",
+      "modulos": [
+        {"n": "03", "titulo": "Sectores", "texto": "¿Trabajas por sectores?\n\nSi no sectorizas, no toques nada y sigue de largo.\n\nSi sectorizas, pon qué porcentaje de la población le toca a cada uno. Deben sumar 100 %: la app te avisa si no cuadra."},
+        {"n": "04", "titulo": "Equipo", "texto": "Cada persona: jornada, horas de administración y de reuniones.\n\nLa última columna la calcula la app: lo que realmente le queda para atender público.\n\nVienen los 78 funcionarios, sin nombres."},
+        {"n": "05", "titulo": "Box", "tono": "warn", "texto": "Cuántas salas hay y cuántas horas está abierta cada una.\n\nOjo: estos números son un supuesto, porque la planilla no los registraba. Hay que corregirlos con lo que realmente tenemos."}
+      ],
+      "remate": "Si a alguien le sale el cartel rojo «sobreasignado», no es un error del programa: esa persona tiene más horas de papeleo y reuniones que horas de contrato. Es un problema real, y ahora se ve.",
+      "remate_tono": "crit",
+      "notas": "El cartel «sobreasignado» genera la conversación más incómoda y más útil de la reunión. En la planilla aparecía como «delta negativo» y nadie lo miraba.\n\nSobre los box: sé honesto. Los números son un punto de partida inventado. Pide el dato real como tarea concreta, con responsable y fecha."
+    },
+    {
+      "tipo": "calculo",
+      "kicker": "El corazón",
+      "titulo": "Qué nos comprometemos a hacer",
+      "bajada": "Módulo 06. Vienen 236 prestaciones cargadas, de todos los ciclos vitales.",
+      "campos": [
+        {"titulo": "Cobertura", "texto": "A qué parte de la gente vamos a llegar. Se escribe en decimales: 0.8 es 80 %."},
+        {"titulo": "Concentración", "texto": "Cuántas veces al año atendemos a cada persona."},
+        {"titulo": "Quién la hace", "texto": "El estamento, qué porcentaje le toca y cuántos minutos dura la atención."}
+      ],
+      "consola": {
+        "titulo": "Y abajo, el cálculo en palabras",
+        "lineas": [
+          {"t": "Población objetivo = 1.357", "c": "base"},
+          {"t": "(per cápita, mujeres de 45 a 64 años)", "c": "tenue"},
+          {"t": "", "c": "base"},
+          {"t": "Total a trabajar =", "c": "base"},
+          {"t": "1.357 × 1,15 × 1,0 = 1.561", "c": "acento"},
+          {"t": "atenciones al año", "c": "tenue"},
+          {"t": "", "c": "base"},
+          {"t": "Carga total = 12,4 h/semana", "c": "acento"}
+        ]
+      },
+      "remate": "Si un número te parece raro, aquí ves de dónde salió.",
+      "notas": "Aquí la herramienta se gana al equipo técnico: el cálculo deja de ser una caja negra.\n\nAbre una prestación que ellos conozcan bien —control cardiovascular o control prenatal— no una cualquiera. Que reconozcan sus propios números.\n\nCobertura y concentración las decide el equipo, no la app. Insiste: la app no decide nada, calcula consecuencias."
+    },
+    {
+      "tipo": "grafico",
+      "kicker": "La respuesta",
+      "titulo": "¿Alcanza o no alcanza?",
+      "bajada": "Módulo 07. Una barra por estamento: a la derecha sobra, a la izquierda falta.",
+      "datos": [
+        {"nombre": "Enfermero(a)", "valor": 183.8},
+        {"nombre": "Kinesiólogo(a)", "valor": 178.7},
+        {"nombre": "Psicólogo(a)", "valor": 75.1},
+        {"nombre": "Nutricionista", "valor": 72.6},
+        {"nombre": "Matrón(a)", "valor": 47.6},
+        {"nombre": "Médico", "valor": 8.4},
+        {"nombre": "Odontólogo(a)", "valor": -12.7}
+      ],
+      "unidad": "horas por semana",
+      "panel": {
+        "titulo": "Barra roja = hay un problema",
+        "texto": "Odontología necesita 12,7 horas semanales más de las que tiene. Con la dotación actual, esa cartera no se puede cumplir completa.",
+        "enfasis": "No es una opinión ni una impresión: es aritmética, y ahora está a la vista de todos.",
+        "pie": "Haz clic en cualquier barra y te lleva al detalle de ese estamento."
+      },
+      "notas": "Cifras del ejercicio real de Tongoy con el per cápita 2026.\n\nMás abajo en la app hay un gráfico de «cuello de botella»: dice qué recurso aprieta primero, si un estamento o una sala. Sobre 100 % significa que ya no da más.\n\nSi preguntan «¿y qué hacemos con odontología?»: ese es el punto. La app no lo resuelve, lo pone sobre la mesa."
+    },
+    {
+      "tipo": "split_cifra",
+      "kicker": "Para cada referente",
+      "titulo": "Cada uno puede ver lo suyo",
+      "bajada": "Módulo 08. La vista que responde: ¿qué me toca a mí y me alcanzan las horas?",
+      "izq": {
+        "n": "08",
+        "titulo": "Eliges tu estamento arriba",
+        "items": ["Cuántas personas tiene y cuántas horas reales", "Todas las prestaciones que le asignaron", "Cuántas horas exige cada una", "Si le alcanza o no", "Puedes bajar la tabla a Excel"],
+        "pie": "Haz clic en cualquier prestación para corregirla al vuelo."
+      },
+      "der": {
+        "rotulo": "El gráfico que más sirve",
+        "sub": "Ordena tus prestaciones de mayor a menor carga.",
+        "valor": "3 o 4",
+        "texto": "prestaciones suelen concentrar la mitad de todo tu trabajo.",
+        "nota": "Ahí es donde vale la pena discutir cobertura y rendimiento. Discutir las de la cola es gastar reunión."
+      },
+      "notas": "Esta lámina le habla directo a los referentes técnicos. Cada uno llega con una sola pregunta: ¿qué me toca a mí?\n\nDato por si lo preguntan: esta vista NO recalcula nada, usa el mismo motor del balance global. Es imposible que el detalle contradiga al total. En una planilla, cada resumen es una fórmula distinta que se puede desincronizar.\n\nSi tienes tiempo, abre el estamento de quien esté sentado adelante."
+    },
+    {
+      "tipo": "flujo",
+      "kicker": "Simulación",
+      "titulo": "Probar sin miedo",
+      "bajada": "Módulo 09. ¿Y si contratamos otro médico? ¿Y si subimos la cobertura?",
+      "pasos": [
+        {"n": "1", "titulo": "Duplicar", "texto": "Botón «Duplicar escenario activo»"},
+        {"n": "2", "titulo": "Nombrar", "texto": "«Con 2 médicos más»"},
+        {"n": "3", "titulo": "Cambiar", "texto": "Modifica lo que quieras en cualquier módulo"},
+        {"n": "4", "titulo": "Comparar", "texto": "Vuelve y los ves lado a lado"}
+      ],
+      "remate": "Tu escenario original queda intacto. Esto es lo que convierte una discusión de pasillo sobre dotación en una conversación con números.",
+      "remate_tono": "ok",
+      "notas": "Los escenarios son el único insumo real para una conversación sobre dotación con el DESAM.\n\nEn vez de «necesitamos más horas de odontología», llegas con: «con 22 horas más de odontólogo, la brecha se cierra y estas 14 prestaciones se cumplen».\n\nEso se discute distinto."
+    },
+    {
+      "tipo": "dos_modulos",
+      "kicker": "El cierre del ejercicio",
+      "titulo": "Y al final, el informe",
+      "bajada": "Módulo 10. Un botón.",
+      "modulos": [
+        {
+          "n": "10", "titulo": "Generar informe",
+          "items": ["Los insumos que usamos", "Los supuestos que asumimos", "Los resultados y las brechas", "Las recomendaciones"],
+          "aviso": {"tono": "info", "fuerte": "Imprimir o guardar como PDF.", "texto": "Lo llevas a una reunión o lo adjuntas a un oficio."}
+        },
+        {
+          "n": "↓", "titulo": "Guardar tu trabajo",
+          "items": ["Botón «Guardar proyecto» en el menú izquierdo", "Se descarga un archivo", "Ese archivo tiene todo: tus datos, tus escenarios, tus decisiones"],
+          "aviso": {"tono": "warn", "fuerte": "No se guarda sola, y es a propósito.", "texto": "Tú decides qué versión conservar y con qué nombre. Así queda constancia de cada ejercicio. Nada de esto sale de tu computador."}
+        }
+      ],
+      "notas": "La pregunta «¿los datos se van a algún servidor?» aparece siempre. Respuesta: no. No hay internet de por medio salvo para dibujar los gráficos la primera vez.\n\nEsto importa porque el archivo original tenía RUN y nombres de 78 funcionarios. Esta versión viene anonimizada."
+    },
+    {
+      "tipo": "pregunta",
+      "kicker": "Lo único que hay que entender",
+      "titulo": "Programar es decidir.",
+      "titulo2": "Y las decisiones tienen aritmética.",
+      "cuerpo": "Cambiar una cobertura de 1,0 a 0,8 no es mover un número en una planilla: es decidir a cuánta gente vamos a llegar. La herramienta no toma esa decisión. Solo muestra, al instante, lo que cuesta.",
+      "remate": "La app no reemplaza el criterio técnico del equipo. Lo hace visible, y por eso discutible.",
+      "notas": "AQUÍ VA LA DEMO EN VIVO. Es el momento que convence.\n\n1. Abre una prestación de alta carga en el módulo 06.\n2. Cambia la cobertura de 1.0 a 0.8.\n3. Ve al módulo 07 y que vean la barra moverse.\n4. Vuelve atrás.\n\nEse instante —ver el balance reaccionar— hace más que toda la presentación. Si solo te alcanza para una cosa, que sea esta."
+    },
+    {
+      "tipo": "pendientes",
+      "kicker": "Honestidad",
+      "titulo": "Lo que todavía nos falta",
+      "bajada": "Decirlo nosotros antes de que lo descubra otro.",
+      "items": [
+        {"titulo": "Los box", "texto": "Las salas y sus horarios son un supuesto. Hay que levantar el dato real de nuestro centro.", "tono": "crit"},
+        {"titulo": "El ausentismo", "texto": "El 8 % es un valor genérico. Podemos calcularlo con nuestras licencias reales.", "tono": "warn"},
+        {"titulo": "Las coberturas", "texto": "Vienen del ejercicio 2023. Hay que contrastarlas con las Orientaciones del año que programamos.", "tono": "warn"},
+        {"titulo": "El REM propio", "texto": "Adaptar la cartera es transitorio. Lo definitivo es cargar nuestro propio REM, prestación por prestación.", "tono": "mint"}
+      ],
+      "remate": "Ninguno de estos pendientes afecta el cálculo, que está verificado. Son datos de entrada, todos a la vista y todos editables. Que estén declarados es lo que diferencia esta herramienta de la planilla que reemplaza.",
+      "notas": "Esta lámina te da autoridad. Nadie confía en quien presenta algo sin defectos.\n\nSi listas tú los pendientes, el equipo deja de buscarlos para pillarte y empieza a ayudarte a resolverlos.\n\nSal de aquí con TAREAS CONCRETAS: quién levanta el dato de box, quién saca las licencias, para cuándo."
+    },
+    {
+      "tipo": "cierre",
+      "kicker": "Para qué sirve todo esto",
+      "titulo": "Cada brecha que esta herramienta hace visible es una conversación que antes ocurría a ciegas.",
+      "bajada": "Programar bien no es llenar una planilla: es decidir, con horas contadas y población real, a quién alcanzamos a cuidar.",
+      "remate": "Que el cálculo sea transparente es, al final, un asunto de equidad.",
+      "notas": "Cierra con esto y no agregues nada más. No vuelvas a los detalles técnicos.\n\nSi hay preguntas, respóndelas antes de esta lámina.\n\nÚltima frase antes de apagar el proyector: «¿Qué necesitan de mí para poder usarla?»"
+    }
+  ]
+}

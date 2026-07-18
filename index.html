@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProgramAPS — Programación de oferta y cupos para la APS de Chile</title>
+<meta name="description" content="Una herramienta abierta y auditable para programar los recursos clínicos de un CESFAM. De una planilla heredada a una app que cualquier equipo puede usar, entender y corregir.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#061A1D; --void2:#0A2529; --deep:#0E3339; --brand:#0E5F63; --brand-lite:#3E9A93;
+  --mint:#7FD4C4; --mint-dim:#5BAEA2; --ink:#0C1A1D; --ink2:#3B4E53; --ink3:#7C979B;
+  --paper:#F4F7F7; --paper2:#FFFFFF; --line:#D5E0E0; --line-dk:#1B4147;
+  --ok:#3BB273; --warn:#E0A63C; --crit:#E5645B;
+  --sans:'IBM Plex Sans',system-ui,sans-serif; --disp:'Archivo',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1120px,92vw);margin:0 auto}
+.mono{font-family:var(--mono)}
+
+/* ── barra superior ── */
+header{position:sticky;top:0;z-index:40;background:rgba(6,26,29,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-dk)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;padding:.85rem 0}
+.logo{font-family:var(--disp);font-weight:800;font-size:1.25rem;color:#fff;letter-spacing:-.02em}
+.logo em{font-style:normal;color:var(--mint)}
+nav.top{display:flex;gap:1.6rem;font-size:.9rem;color:#AFC9C6;font-weight:500}
+nav.top a:hover{color:#fff}
+.cta-top{background:var(--brand);color:#fff!important;padding:.5rem 1.05rem;border-radius:8px;font-weight:600;
+  box-shadow:0 2px 12px rgba(14,95,99,.4);transition:.15s}
+.cta-top:hover{background:var(--brand-lite);transform:translateY(-1px)}
+@media(max-width:760px){nav.top{display:none}}
+
+/* ── hero ── */
+.hero{position:relative;background:radial-gradient(120% 130% at 84% 8%,var(--deep) 0%,var(--void2) 44%,var(--void) 100%);
+  color:#EAF3F2;overflow:hidden;padding:clamp(3.5rem,9vh,7rem) 0 clamp(3rem,7vh,5.5rem)}
+.hero .wm{position:absolute;right:-3%;top:-16%;font-family:var(--disp);font-weight:900;font-size:42vh;
+  color:rgba(127,212,196,.045);letter-spacing:-.05em;pointer-events:none;user-select:none;line-height:1}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.26em;text-transform:uppercase;color:var(--mint-dim);
+  display:flex;align-items:center;gap:.7rem;margin-bottom:1.4rem}
+.eyebrow::before{content:"";width:30px;height:2px;background:currentColor;opacity:.7}
+.hero h1{font-family:var(--disp);font-weight:800;letter-spacing:-.03em;line-height:1.03;
+  font-size:clamp(2.3rem,6vw,4.4rem);max-width:16ch;color:#fff}
+.hero h1 .g{color:var(--mint)}
+.hero .lead{font-size:clamp(1.05rem,1.9vw,1.35rem);color:#AFC9C6;max-width:56ch;margin-top:1.5rem;line-height:1.5}
+.hero-actions{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:2.2rem}
+.btn{display:inline-flex;align-items:center;gap:.55rem;padding:.8rem 1.5rem;border-radius:10px;font-weight:600;
+  font-size:1rem;transition:.16s;cursor:pointer;border:none}
+.btn.primary{background:var(--mint);color:var(--void);box-shadow:0 4px 20px rgba(127,212,196,.25)}
+.btn.primary:hover{background:#95e0d1;transform:translateY(-2px)}
+.btn.ghost{background:rgba(255,255,255,.06);color:#EAF3F2;border:1px solid rgba(127,212,196,.28)}
+.btn.ghost:hover{background:rgba(127,212,196,.14);color:#fff}
+
+/* firma: barra de balance */
+.balance{display:flex;align-items:center;margin-top:3rem;width:min(58%,560px);height:16px}
+.balance .neg{height:100%;background:linear-gradient(90deg,transparent,var(--crit));border-radius:8px 0 0 8px;flex:1;transform-origin:right;animation:growL 1.1s cubic-bezier(.2,.7,.2,1) .3s both}
+.balance .mid{width:2px;height:34px;background:var(--mint);z-index:2}
+.balance .pos{height:100%;background:linear-gradient(90deg,var(--brand-lite),var(--mint));border-radius:0 8px 8px 0;flex:1.35;transform-origin:left;animation:growR 1.1s cubic-bezier(.2,.7,.2,1) .3s both}
+.balance-cap{font-family:var(--mono);font-size:.72rem;color:#5B827E;margin-top:.7rem;display:flex;justify-content:space-between;width:min(58%,560px)}
+@keyframes growL{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes growR{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.balance .neg,.balance .pos{animation:none}}
+
+/* ── franja de cifras ── */
+.stats{background:var(--void);color:#EAF3F2;border-top:1px solid var(--line-dk);padding:2.6rem 0}
+.stats .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.stat .n{font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,4vw,2.8rem);color:var(--mint);letter-spacing:-.02em;line-height:1}
+.stat .l{font-size:.88rem;color:#9FC1BD;margin-top:.35rem;line-height:1.35}
+@media(max-width:760px){.stats .grid{grid-template-columns:1fr 1fr;gap:1.3rem 1rem}}
+
+/* ── secciones claras ── */
+section.block{padding:clamp(3.2rem,7vh,5.5rem) 0}
+.sec-head{max-width:60ch}
+.sec-eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--brand);font-weight:500}
+.sec-title{font-family:var(--disp);font-weight:800;letter-spacing:-.025em;font-size:clamp(1.7rem,3.6vw,2.6rem);margin:.6rem 0 .6rem;line-height:1.08}
+.sec-sub{font-size:clamp(1rem,1.6vw,1.15rem);color:var(--ink2);max-width:60ch}
+
+/* historia: de la planilla a la app */
+.journey{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;margin-top:2.4rem}
+.jcard{border-radius:16px;padding:1.6rem 1.7rem;position:relative;overflow:hidden}
+.jcard.before{background:#FBF3E1;border:1px solid #F0E0BE}
+.jcard.after{background:linear-gradient(155deg,#0E3339,#061A1D);color:#EAF3F2;border:1px solid var(--line-dk)}
+.jtag{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.jcard.before .jtag{color:var(--warn)}.jcard.after .jtag{color:var(--mint-dim)}
+.jcard h3{font-family:var(--disp);font-weight:700;font-size:1.3rem;margin:.5rem 0 .9rem;letter-spacing:-.01em}
+.jcard.after h3{color:#fff}
+.jlist{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.jlist li{position:relative;padding-left:1.4rem;font-size:.96rem;line-height:1.4}
+.jlist li::before{content:"";position:absolute;left:0;top:.5em;width:7px;height:7px;border-radius:2px}
+.jcard.before .jlist li::before{background:var(--warn)}
+.jcard.after .jlist li::before{background:var(--mint)}
+.jcard.after .jlist li{color:#CFE4E1}
+.arrow-mid{display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;color:var(--ink3)}
+@media(max-width:760px){.journey{grid-template-columns:1fr}}
+
+/* qué encontrarás: tarjetas de entregables */
+.deck{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2.6rem}
+.item{background:var(--paper2);border:1px solid var(--line);border-radius:16px;padding:1.5rem;display:flex;flex-direction:column;
+  transition:transform .16s,box-shadow .2s;position:relative;overflow:hidden}
+.item:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(12,26,29,.1)}
+.item .ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  background:var(--deep);color:var(--mint);margin-bottom:1rem;flex:none}
+.item .ic svg{width:22px;height:22px}
+.item h3{font-family:var(--disp);font-weight:700;font-size:1.18rem;letter-spacing:-.01em}
+.item .kind{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:.15rem 0 .7rem}
+.item p{font-size:.93rem;color:var(--ink2);line-height:1.45;flex:1}
+.item .go{margin-top:1.1rem;font-weight:600;color:var(--brand);font-size:.92rem;display:inline-flex;align-items:center;gap:.4rem}
+.item:hover .go{gap:.6rem}
+.item.feat{background:linear-gradient(155deg,#0E3339,#08262A);border-color:var(--line-dk)}
+.item.feat h3{color:#fff}.item.feat p{color:#AFC9C6}.item.feat .go{color:var(--mint)}
+.item.feat .ic{background:rgba(127,212,196,.14)}
+@media(max-width:900px){.deck{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.deck{grid-template-columns:1fr}}
+
+/* cita / motivación */
+.quote{background:var(--void);color:#EAF3F2;padding:clamp(3.5rem,8vh,6rem) 0}
+.quote blockquote{font-family:var(--disp);font-weight:700;letter-spacing:-.02em;line-height:1.15;
+  font-size:clamp(1.6rem,3.6vw,2.7rem);max-width:24ch;color:#fff}
+.quote .q-g{color:var(--mint)}
+.quote .cite{font-size:1.02rem;color:var(--mint-dim);margin-top:1.6rem;max-width:56ch;line-height:1.5;font-style:italic}
+
+/* footer */
+footer{background:var(--void2);color:#8FB2AE;padding:2.8rem 0;border-top:1px solid var(--line-dk);font-size:.9rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+footer .fl{font-family:var(--mono);font-size:.78rem;letter-spacing:.04em}
+footer a{color:var(--mint-dim);font-weight:500}
+footer a:hover{color:#fff}
+.note-box{background:#E7F1F1;border:1px solid #CADEDE;border-radius:14px;padding:1.2rem 1.4rem;margin-top:2.4rem;
+  font-size:.92rem;color:var(--ink2);line-height:1.5}
+.note-box b{color:var(--brand)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logo">Program<em>APS</em></div>
+    <nav class="top">
+      <a href="#historia">La historia</a>
+      <a href="#material">El material</a>
+      <a href="#porque">El porqué</a>
+    </nav>
+    <a class="cta-top" href="ProgramAPS_Tongoy.html">Abrir la herramienta</a>
+  </div>
+</header>
+
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="wm">A</div>
+  <div class="wrap">
+    <div class="eyebrow">Atención Primaria de Salud · Chile</div>
+    <h1>Programar con las horas que <span class="g">realmente</span> tenemos.</h1>
+    <p class="lead">Una herramienta abierta y auditable para planificar los recursos clínicos de un CESFAM. Nació de una planilla heredada y se convirtió en algo que cualquier equipo puede abrir, entender, cuestionar y corregir.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="ProgramAPS_Tongoy.html">Abrir la herramienta →</a>
+      <a class="btn ghost" href="ProgramAPS_Presentacion.html">Ver la presentación</a>
+    </div>
+    <div class="balance"><div class="neg"></div><div class="mid"></div><div class="pos"></div></div>
+    <div class="balance-cap"><span>← déficit · lo que falta</span><span>lo que sobra · superávit →</span></div>
+  </div>
+</div>
+
+<!-- ══ CIFRAS ══ -->
+<div class="stats">
+  <div class="wrap grid">
+    <div class="stat"><div class="n">236</div><div class="l">prestaciones, los cinco ciclos vitales</div></div>
+    <div class="stat"><div class="n">480,84</div><div class="l">h/semana, verificadas contra el Excel original</div></div>
+    <div class="stat"><div class="n">14 / 14</div><div class="l">estamentos que reproducen el modelo, sin diferencia</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">datos que salen de tu computador</div></div>
+  </div>
+</div>
+
+<!-- ══ HISTORIA ══ -->
+<section class="block" id="historia">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">De dónde venimos</div>
+      <h2 class="sec-title">El cálculo estaba bien. El problema era otro.</h2>
+      <p class="sec-sub">La planilla que originó este trabajo calculaba correctamente. Lo que fallaba es que su lógica vivía escondida —en hojas ocultas, en fórmulas de 130 caracteres, en la cabeza de quien la construyó. Una herramienta que nadie entiende, tarde o temprano se usa mal o se abandona.</p>
+    </div>
+    <div class="journey">
+      <div class="jcard before">
+        <div class="jtag">La planilla heredada</div>
+        <h3>Potente, pero opaca</h3>
+        <ul class="jlist">
+          <li>Hojas ocultas con los supuestos críticos</li>
+          <li>Fórmulas que se rompen con un «Suprimir»</li>
+          <li>Horas mostradas como «-1 day, 23:25»</li>
+          <li>RUN y nombres de 78 personas circulando</li>
+          <li>Reglas que solo vivían en una cabeza</li>
+        </ul>
+      </div>
+      <div class="jcard after">
+        <div class="jtag">La herramienta</div>
+        <h3>El mismo modelo, ahora auditable</h3>
+        <ul class="jlist">
+          <li>Cada supuesto a la vista y editable</li>
+          <li>Datos y cálculo separados: nada que romper</li>
+          <li>Horas legibles y el cálculo explicado en palabras</li>
+          <li>Dotación anonimizada, sin RUN ni nombres</li>
+          <li>Las reglas, escritas y verificadas una a una</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note-box">
+      <b>Una lección quedó grabada en el camino:</b> la primera validación afirmaba reproducir el Excel a la perfección… y era falsa, porque el verificador compartía el mismo error que el verificado. Al corregirlo, la demanda real resultó ser un 25&nbsp;% mayor de lo calculado. Coincidir no es lo mismo que estar bien: hay que probar contra un testigo que no pueda cometer el mismo error.
+    </div>
+  </div>
+</section>
+
+<!-- ══ MATERIAL ══ -->
+<section class="block" id="material" style="background:var(--paper2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Qué encontrarás aquí</div>
+      <h2 class="sec-title">Todo el trabajo, en un solo lugar.</h2>
+      <p class="sec-sub">La herramienta, el material para presentarla y aprenderla, y el relato honesto de cómo se construyó.</p>
+    </div>
+    <div class="deck">
+
+      <a class="item feat" href="ProgramAPS_Tongoy.html">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></div>
+        <h3>La herramienta</h3>
+        <div class="kind">Aplicación · HTML</div>
+        <p>Programa el año de tu CESFAM: población, equipo, cartera, box y escenarios. Se abre con doble clic, sin instalar nada, y responde la pregunta de fondo: ¿la oferta alcanza?</p>
+        <span class="go">Abrir →</span>
+      </a>
+
+      <a class="item" href="ProgramAPS_Presentacion.html">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/></svg></div>
+        <h3>La presentación</h3>
+        <div class="kind">17 láminas · HTML</div>
+        <p>Para explicarla al equipo. Navegación con flechas, notas del orador con la tecla N y un momento pensado para convencer: ver el balance moverse en vivo.</p>
+        <span class="go">Ver →</span>
+      </a>
+
+      <a class="item" href="documento.html?doc=guia">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M8 12h8M8 16h5"/></svg></div>
+        <h3>Guía de uso</h3>
+        <div class="kind">Documento · para todos</div>
+        <p>Diez pasos en lenguaje llano, sin tecnicismos, para que cualquier persona del equipo la siga sin ayuda. Empieza por aquí si vas a usarla.</p>
+        <span class="go">Leer →</span>
+      </a>
+
+      <a class="item" href="documento.html?doc=manual">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg></div>
+        <h3>Manual técnico</h3>
+        <div class="kind">Documento · para referentes</div>
+        <p>Las reglas del modelo con su origen exacto, el encuadre normativo (FONASA, MINSAL, Ley 19.378, IAAPS, MAIS), un guion de capacitación de 45 minutos y las objeciones con su respuesta.</p>
+        <span class="go">Leer →</span>
+      </a>
+
+      <a class="item" href="documento.html?doc=bitacora">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+        <h3>Bitácora del desarrollador</h3>
+        <div class="kind">Relato · cómo se hizo</div>
+        <p>El viaje completo desde el Excel: qué encontramos, qué decidimos y por qué, los errores que corregimos y la motivación de fondo. Escrita para leerse de corrido.</p>
+        <span class="go">Leer →</span>
+      </a>
+
+      <a class="item" href="documento.html?doc=pruebas">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h3>Informe de pruebas</h3>
+        <div class="kind">Registro · la evidencia</div>
+        <p>La herramienta ejecutada contra cinco perfiles de establecimiento del país. Los cuatro defectos encontrados —uno grave— y cómo se corrigieron.</p>
+        <span class="go">Leer →</span>
+      </a>
+
+    </div>
+    <div class="note-box">
+      También disponibles: <b>la presentación en PowerPoint</b> (por si prefieres Office), y el <b>generador de la presentación</b> —contenido en JSON y un script en Python— para que editar las láminas no exija tocar código.
+    </div>
+  </div>
+</section>
+
+<!-- ══ PORQUÉ ══ -->
+<section class="quote" id="porque">
+  <div class="wrap">
+    <div class="sec-eyebrow" style="color:var(--mint-dim)">Para qué sirve todo esto</div>
+    <blockquote>Cada brecha que esta herramienta hace visible es una conversación que antes ocurría <span class="q-g">a ciegas.</span></blockquote>
+    <p class="cite">Programar bien un CESFAM no es llenar una planilla: es decidir, con horas contadas y población real, a quién alcanzamos a cuidar. Que el cálculo sea transparente es, al final, un asunto de equidad.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="logo" style="font-size:1.1rem">Program<em>APS</em></div>
+      <div class="fl" style="margin-top:.4rem">Departamento de Salud Coquimbo · CESFAM Tongoy y Posta Guanaqueros</div>
+    </div>
+    <div style="text-align:right">
+      <a href="ProgramAPS_Tongoy.html">Abrir la herramienta</a> ·
+      <a href="documento.html?doc=indice">Índice del proyecto</a>
+      <div class="fl" style="margin-top:.5rem;color:#5B827E">Herramienta abierta · los datos no salen de tu computador</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

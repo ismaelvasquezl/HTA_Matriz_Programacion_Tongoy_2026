@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProgramAPS — Documento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#061A1D; --void2:#0A2529; --deep:#0E3339; --brand:#0E5F63; --brand-lite:#3E9A93;
+  --mint:#7FD4C4; --mint-dim:#5BAEA2; --ink:#0C1A1D; --ink2:#3B4E53; --ink3:#7C979B;
+  --paper:#F4F7F7; --paper2:#FFFFFF; --line:#D5E0E0; --line-dk:#1B4147;
+  --ok:#3BB273; --warn:#E0A63C; --crit:#E5645B;
+  --sans:'IBM Plex Sans',system-ui,sans-serif; --disp:'Archivo',sans-serif;
+  --serif:'Newsreader',Georgia,serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* barra superior */
+header{position:sticky;top:0;z-index:40;background:rgba(6,26,29,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line-dk)}
+header .in{width:min(1160px,94vw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.8rem 0;gap:1rem}
+.logo{font-family:var(--disp);font-weight:800;font-size:1.15rem;color:#fff;letter-spacing:-.02em;flex:none}
+.logo em{font-style:normal;color:var(--mint)}
+.logo a{color:inherit}.logo a:hover{text-decoration:none}
+.docnav{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:flex-end}
+.docnav a{font-size:.82rem;color:#AFC9C6;padding:.35rem .7rem;border-radius:7px;font-weight:500;transition:.15s;white-space:nowrap}
+.docnav a:hover{background:rgba(127,212,196,.12);color:#fff;text-decoration:none}
+.docnav a.active{background:var(--brand);color:#fff}
+@media(max-width:820px){.docnav a{font-size:.75rem;padding:.3rem .55rem}}
+
+/* layout lectura */
+.shell{width:min(1160px,94vw);margin:0 auto;display:grid;grid-template-columns:1fr;gap:0}
+main{background:var(--paper2);border:1px solid var(--line);border-top:none;border-radius:0 0 16px 16px;
+  padding:clamp(2rem,5vw,4rem) clamp(1.4rem,5vw,4.5rem);min-height:70vh}
+.crumbs{width:min(1160px,94vw);margin:1.4rem auto .4rem;font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--ink3)}
+.crumbs a{color:var(--brand-lite)}
+.doc-hero{width:min(1160px,94vw);margin:0 auto;background:linear-gradient(150deg,#0E3339,#061A1D);
+  border:1px solid var(--line-dk);border-radius:16px 16px 0 0;padding:clamp(1.6rem,4vw,2.6rem) clamp(1.4rem,5vw,4.5rem);color:#EAF3F2}
+.doc-hero .kind{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mint-dim)}
+.doc-hero h1{font-family:var(--disp);font-weight:800;letter-spacing:-.02em;font-size:clamp(1.6rem,4vw,2.4rem);color:#fff;margin-top:.5rem;line-height:1.1}
+
+/* contenido markdown renderizado */
+.md{max-width:74ch;margin:0 auto}
+.md h1{font-family:var(--disp);font-weight:800;font-size:1.9rem;letter-spacing:-.02em;color:var(--ink);
+  margin:2.4rem 0 .9rem;line-height:1.12;padding-bottom:.5rem;border-bottom:2px solid var(--line)}
+.md h1:first-child{margin-top:0}
+.md h2{font-family:var(--disp);font-weight:700;font-size:1.42rem;letter-spacing:-.015em;color:var(--brand);
+  margin:2.2rem 0 .7rem;line-height:1.15}
+.md h3{font-family:var(--disp);font-weight:700;font-size:1.14rem;color:var(--ink);margin:1.6rem 0 .5rem}
+.md h4{font-weight:600;font-size:1rem;color:var(--ink2);margin:1.3rem 0 .4rem;text-transform:none}
+.md p{font-family:var(--serif);font-size:1.075rem;line-height:1.72;color:#1c2b30;margin:.85rem 0}
+.md a{color:var(--brand);font-weight:500}
+.md strong{font-weight:700;color:var(--ink)}
+.md em{font-style:italic}
+.md ul,.md ol{margin:.8rem 0 1rem;padding-left:1.3rem}
+.md li{font-family:var(--serif);font-size:1.05rem;line-height:1.6;margin:.35rem 0;color:#1c2b30}
+.md li::marker{color:var(--brand-lite)}
+.md blockquote{border-left:3px solid var(--mint);background:#EAF6F4;margin:1.2rem 0;padding:.9rem 1.3rem;border-radius:0 10px 10px 0}
+.md blockquote p{margin:.3rem 0;font-style:italic;color:var(--brand);font-size:1.05rem}
+.md code{font-family:var(--mono);font-size:.86em;background:#EAF1F1;color:var(--brand);padding:.12em .4em;border-radius:5px;border:1px solid var(--line)}
+.md pre{background:#06181B;border:1px solid var(--line-dk);border-radius:12px;padding:1.1rem 1.3rem;overflow-x:auto;margin:1.2rem 0}
+.md pre code{background:none;border:none;color:#DCEAE8;font-size:.86rem;padding:0;line-height:1.6}
+.md hr{border:none;border-top:1px solid var(--line);margin:2.4rem 0}
+.md table{border-collapse:collapse;width:100%;margin:1.3rem 0;font-family:var(--sans);font-size:.92rem;display:block;overflow-x:auto}
+.md th{background:var(--deep);color:#EAF3F2;font-weight:600;text-align:left;padding:.6rem .85rem;font-size:.85rem}
+.md td{padding:.55rem .85rem;border-bottom:1px solid var(--line);color:var(--ink2);vertical-align:top}
+.md tr:nth-child(even) td{background:#F7FAFA}
+.md table code{font-size:.82em}
+
+/* estados */
+.state{max-width:74ch;margin:2rem auto;padding:1.4rem 1.6rem;border-radius:12px;font-size:.98rem;line-height:1.55}
+.state.load{background:#E7F1F1;color:var(--ink2);border:1px solid #CADEDE}
+.state.err{background:#FCEBE9;color:var(--crit);border:1px solid #F5D3CF}
+.state.err b{color:#8f2820}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--brand-lite);border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;margin-right:.5rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* pie de documento */
+.doc-foot{width:min(1160px,94vw);margin:1.6rem auto 3.5rem;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:.76rem;color:var(--ink3)}
+.doc-foot a{color:var(--brand);font-weight:500}
+.backtop{background:var(--brand);color:#fff;border:none;border-radius:8px;padding:.55rem 1.1rem;font-family:var(--sans);
+  font-weight:600;font-size:.85rem;cursor:pointer;transition:.15s}
+.backtop:hover{background:var(--brand-lite)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="in">
+    <div class="logo"><a href="index.html">Program<em>APS</em></a></div>
+    <nav class="docnav" id="docnav"></nav>
+  </div>
+</header>
+
+<div class="crumbs"><a href="index.html">Inicio</a> › <span id="crumb">Documento</span></div>
+
+<div class="doc-hero">
+  <div class="kind" id="doc-kind">Documento</div>
+  <h1 id="doc-title">Cargando…</h1>
+</div>
+
+<div class="shell">
+  <main>
+    <div id="content" class="md">
+      <div class="state load"><span class="spin"></span>Cargando el documento…</div>
+    </div>
+  </main>
+</div>
+
+<div class="doc-foot">
+  <span>Departamento de Salud Coquimbo · CESFAM Tongoy y Posta Guanaqueros</span>
+  <button class="backtop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Volver arriba</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+/* ── Parser Markdown de respaldo ────────────────────────────────────
+   Si el CDN de "marked" no carga (red restringida, CDN caído), el visor
+   igual funciona con este parser propio, sin dependencias. Cubre lo que
+   usan estos documentos: encabezados, listas, tablas, citas, código,
+   negrita/cursiva, enlaces y reglas. No pretende ser exhaustivo. */
+function mdFallback(src){
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const inline = s => esc(s)
+    .replace(/`([^`]+)`/g,(m,c)=>`<code>${c}</code>`)
+    .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>")
+    .replace(/(^|[^*])\*([^*]+)\*/g,"$1<em>$2</em>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2">$1</a>');
+  const lines = src.replace(/\r/g,"").split("\n");
+  let html="", i=0;
+  const flushList = (tag,items)=> items.length? `<${tag}>${items.map(x=>`<li>${inline(x)}</li>`).join("")}</${tag}>` : "";
+  while(i<lines.length){
+    let l = lines[i];
+    if(/^\s*$/.test(l)){ i++; continue; }
+    // regla
+    if(/^---+\s*$/.test(l)){ html+="<hr>"; i++; continue; }
+    // encabezados
+    let h = l.match(/^(#{1,4})\s+(.*)$/);
+    if(h){ const n=h[1].length; html+=`<h${n}>${inline(h[2])}</h${n}>`; i++; continue; }
+    // cita
+    if(/^>\s?/.test(l)){ const buf=[]; while(i<lines.length&&/^>\s?/.test(lines[i])){buf.push(lines[i].replace(/^>\s?/,""));i++;}
+      html+=`<blockquote>${buf.map(x=>`<p>${inline(x)}</p>`).join("")}</blockquote>`; continue; }
+    // bloque de código
+    if(/^```/.test(l)){ i++; const buf=[]; while(i<lines.length&&!/^```/.test(lines[i])){buf.push(lines[i]);i++;} i++;
+      html+=`<pre><code>${esc(buf.join("\n"))}</code></pre>`; continue; }
+    // tabla
+    if(/^\|/.test(l) && i+1<lines.length && /^\|[\s:|-]+\|/.test(lines[i+1])){
+      const cells = r => r.replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+      const head = cells(l); i+=2; const rows=[];
+      while(i<lines.length && /^\|/.test(lines[i])){ rows.push(cells(lines[i])); i++; }
+      html+=`<table><thead><tr>${head.map(c=>`<th>${inline(c)}</th>`).join("")}</tr></thead><tbody>`+
+        rows.map(r=>`<tr>${r.map(c=>`<td>${inline(c)}</td>`).join("")}</tr>`).join("")+`</tbody></table>`;
+      continue;
+    }
+    // listas
+    if(/^\s*[-*]\s+/.test(l)){ const items=[]; while(i<lines.length&&/^\s*[-*]\s+/.test(lines[i])){items.push(lines[i].replace(/^\s*[-*]\s+/,""));i++;}
+      html+=flushList("ul",items); continue; }
+    if(/^\s*\d+\.\s+/.test(l)){ const items=[]; while(i<lines.length&&/^\s*\d+\.\s+/.test(lines[i])){items.push(lines[i].replace(/^\s*\d+\.\s+/,""));i++;}
+      html+=flushList("ol",items); continue; }
+    // párrafo
+    const buf=[]; while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(#{1,4}\s|>|```|\||\s*[-*]\s|\s*\d+\.\s|---+\s*$)/.test(lines[i])){buf.push(lines[i]);i++;}
+    html+=`<p>${inline(buf.join(" "))}</p>`;
+  }
+  return html;
+}
+</script>
+<script>
+/* Catálogo de documentos. El visor recibe ?doc=clave y renderiza el .md
+   correspondiente. Mantener alineado con los archivos del repositorio. */
+const DOCS = {
+  guia:     {file:"Guia_de_uso_ProgramAPS.md",      title:"Guía de uso",              kind:"Para todo el equipo",  nav:"Guía"},
+  manual:   {file:"Manual_tecnico_ProgramAPS.md",   title:"Manual técnico",           kind:"Para el referente",    nav:"Manual"},
+  bitacora: {file:"Bitacora_del_desarrollador.md",  title:"Bitácora del desarrollador",kind:"Cómo se hizo",        nav:"Bitácora"},
+  pruebas:  {file:"Informe_pruebas_ProgramAPS.md",  title:"Informe de pruebas",       kind:"La evidencia",         nav:"Pruebas"},
+  indice:   {file:"LEEME_indice_del_proyecto.md",   title:"Índice del proyecto",      kind:"Mapa general",         nav:"Índice"}
+};
+
+const params = new URLSearchParams(location.hash.slice(1) || location.search);
+let key = params.get("doc");
+if(!DOCS[key]) key = "guia";
+
+// menú de navegación entre documentos
+const nav = document.getElementById("docnav");
+nav.innerHTML = Object.entries(DOCS).map(([k,d]) =>
+  `<a href="?doc=${k}" class="${k===key?'active':''}">${d.nav}</a>`).join("");
+
+const doc = DOCS[key];
+document.getElementById("doc-kind").textContent = doc.kind;
+document.getElementById("crumb").textContent = doc.title;
+document.title = "ProgramAPS — " + doc.title;
+
+// Usa "marked" si el CDN cargó; si no, el parser de respaldo. En ambos
+// casos el resultado se limpia con DOMPurify cuando está disponible.
+const hasMarked = (typeof marked !== "undefined");
+if(hasMarked) marked.setOptions({gfm:true, breaks:false, headerIds:true, mangle:false});
+const render = md => hasMarked ? marked.parse(md) : mdFallback(md);
+const sanitize = raw => (typeof DOMPurify !== "undefined")
+  ? DOMPurify.sanitize(raw, {ADD_ATTR:['target']}) : raw;
+
+fetch(doc.file)
+  .then(r => { if(!r.ok) throw new Error(r.status); return r.text(); })
+  .then(md => {
+    // el H1 del propio documento pasa a ser el título del hero; se quita del cuerpo
+    const lines = md.split("\n");
+    let title = doc.title;
+    const idx = lines.findIndex(l => /^#\s+/.test(l));
+    if(idx !== -1){ title = lines[idx].replace(/^#\s+/, "").trim(); lines.splice(idx,1); }
+    document.getElementById("doc-title").textContent = title;
+    document.getElementById("content").innerHTML = sanitize(render(lines.join("\n")));
+  })
+  .catch(err => {
+    document.getElementById("doc-title").textContent = doc.title;
+    document.getElementById("content").innerHTML =
+      `<div class="state err"><b>No se pudo cargar el documento.</b><br><br>
+       Si abriste este archivo con doble clic (desde tu computador), el navegador
+       bloquea la lectura de archivos vecinos por seguridad. Este visor funciona
+       cuando el sitio está publicado en GitHub Pages o en cualquier servidor web.<br><br>
+       Mientras tanto, puedes abrir el archivo directamente:
+       <a href="${doc.file}">${doc.file}</a><br>
+       <span style="color:#7C979B;font-size:.85rem">(detalle técnico: ${err.message})</span></div>`;
+  });
+</script>
+</body>
+</html>
