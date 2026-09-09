@@ -286,28 +286,35 @@ footer a:hover{color:#fff}
   </div>
 </section>
 
-<!-- Diseño visual del contador -->
-<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 15px; background: #24292e; color: #ffffff; border-radius: 8px; width: 240px; margin: 20px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <h4 style="margin: 0 0 5px 0; font-size: 14px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px;">Visitas Totales</h4>
-    <h2 id="contador-global" style="margin: 0; font-size: 28px; color: #58a6ff;">Cargando...</h2>
+<!-- 1. El diseño visual en donde se mostrará el número -->
+<div style="font-family: Arial, sans-serif; text-align: center; padding: 12px; background: #1f2328; color: #ffffff; border-radius: 6px; width: 200px; margin: 15px auto;">
+    <span style="font-size: 12px; color: #848d97; display: block; margin-bottom: 4px;">VISITAS TOTALES</span>
+    <span id="contador-v2" style="font-size: 24px; font-weight: bold; color: #2f81f7;">Cargando...</span>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Configuramos la URL limpia de tu repositorio de GitHub como clave única
-        const ID_SITIO = "ismaelvasquezl_hta_matriz_tongoy_2026";
-        
-        // Llamada a la API moderna para aumentar y obtener el conteo
-        fetch(`https://counterapi.dev`)
-            .then(response => response.json())
-            .then(data => {
-                // Actualiza el texto en pantalla con el número devuelto por la API
-                document.getElementById("contador-global").innerText = data.count;
-            })
-            .catch(error => {
-                console.error("Error al conectar con CounterAPI:", error);
-                document.getElementById("contador-global").innerText = "0";
-            });
+<!-- 2. La lógica de conexión con CounterAPI V2 -->
+<script type="module">
+    // Importamos la librería oficial directamente desde CDN
+    import { Counter } from 'https://cdn.jsdelivr.net/npm/counterapi/dist/counter.esm.min.js';
+
+    // ¡REEMPLAZA ESTE NOMBRE por el Workspace exacto que creaste en el Paso 1!
+    const miWorkspace = 'ProgramAPS'; 
+    // ¡REEMPLAZA ESTE NOMBRE por el Counter exacto que creaste en el Paso 1!
+    const miContador = 'first-counter-5461';
+
+    // Inicializamos el cliente apuntando a tu espacio de trabajo
+    const counter = new Counter({ workspace: miWorkspace });
+
+    // Ejecutamos la función .up() para sumar 1 a la visita y pintar el resultado
+    counter.up(miContador)
+        .then(result => {
+            document.getElementById('contador-v2').textContent = result.value;
+        })
+        .catch(error => {
+            console.error('Error en CounterAPI:', error.message);
+            document.getElementById('contador-v2').textContent = 'Error';
+        });
+</script>
 
 <footer>
   <div class="wrap">
