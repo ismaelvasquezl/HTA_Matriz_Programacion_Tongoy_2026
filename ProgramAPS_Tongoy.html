@@ -289,9 +289,12 @@ td input[type=number]{width:5.2rem}
   </div>
   <div class="bar-actions">
     <button class="btn" id="btn-add-rrhh">Añadir persona</button>
+    <button class="btn sec" id="btn-import-rrhh" title="Carga la dotación exportada desde el Monitor de dotación (llega anonimizada)">Importar recurso humano</button>
+    <input type="file" id="file-rrhh" accept=".json,application/json" style="display:none">
     <span class="spacer"></span>
     <span class="mini" id="rrhh-resumen"></span>
   </div>
+  <div class="note" id="rrhh-import-note">¿Actualizaste la dotación en el <b>Monitor de dotación</b>? Usa <b>«Importar recurso humano»</b> para traerla aquí. El archivo del Monitor llega anonimizado (sin nombres, solo la glosa por código). Reemplaza la dotación actual, y después puedes seguir editándola a mano como siempre.</div>
   <div class="card">
     <div class="tbl-wrap"><table id="tbl-rrhh"><thead><tr>
       <th>Glosa</th><th>Estamento</th><th>Sector</th><th class="num">Jornada (h/sem)</th><th class="num">Admin (h/sem)</th><th class="num">Indirectas (h/sem)</th><th class="num">Ausent. %</th><th class="num">Oferta asist. (h/sem)</th><th></th>
@@ -519,7 +522,7 @@ function boxHeuristico(a){
 function buildBase(){
   const est = {
     id: uid(), nombre: "Base",
-    meta: { estab:"CESFAM Tongoy", comuna:"Coquimbo · DESAM", anio:2026 },
+    meta: { estab:"CESFAM Tongoy", comuna:"Coquimbo", anio:2026 },
     calendario: { habiles:250, vac:20, pac:5, perm:6 },              // 2026: ajustar hábiles reales si difiere
     parametros: { colacion:5, colacionDesde:33, jornadaRef:39, ausentismo:8 },  // ausentismo 8% = supuesto prudente APS, editable
     /* Población con la que fueron medidos los valores observados del
@@ -1035,6 +1038,47 @@ document.getElementById("btn-add-rrhh").onclick=()=>{
   E().rrhh.push({id:uid(),glosa:"Nueva persona",est:"Médico",sector:"",jornada:44,admin:0,indir:0,aus:null}); rRRHH();
 };
 
+/* ── Importar recurso humano desde el Monitor de dotación ───────────
+   Recibe el archivo que el Monitor exporta anonimizado. Como resguardo,
+   ProgramAPS vuelve a anonimizar al importar: aunque el archivo trajera
+   nombres, aquí solo se conservan glosa (el código), estamento y horas.
+   Ningún dato personal entra al estado ni al proyecto de ProgramAPS.
+   El import REEMPLAZA la dotación; la edición manual posterior queda
+   intacta, y el escenario activo es el único afectado. */
+document.getElementById("btn-import-rrhh").onclick=()=>document.getElementById("file-rrhh").click();
+document.getElementById("file-rrhh").addEventListener("change", async ev=>{
+  const file=ev.target.files[0]; ev.target.value="";
+  if(!file) return;
+  if(file.size>10*1024*1024){ alert("El archivo es demasiado grande para ser una dotación válida."); return; }
+  let paquete;
+  try{ paquete=JSON.parse(await file.text()); }
+  catch{ alert("El archivo no se pudo leer: no es un JSON válido."); return; }
+  const lista = Array.isArray(paquete.rrhh) ? paquete.rrhh
+              : Array.isArray(paquete.funcionarios) ? paquete.funcionarios : null;
+  if(!lista || !lista.length){
+    alert("El archivo no parece una dotación exportada desde el Monitor. Usa el botón «Exportar para ProgramAPS» del Monitor de dotación."); return;
+  }
+  const num=(v,d)=> (typeof v==="number"&&isFinite(v))?v:(isFinite(+v)?+v:d);
+  const str=(v,d)=> (typeof v==="string")?v.slice(0,120):d;
+  // ANONIMIZACIÓN DEFENSIVA: solo se toman estos campos; cualquier nombre se ignora.
+  const nuevos = lista.map((f,i)=>({
+    id: uid(),
+    glosa: str(f.glosa, "") || (str(f.est||f.estamento,"Persona")+" "+(i+1)),
+    est:  str(f.est||f.estamento, "Médico") || "Médico",
+    sector: "",                 // el Monitor no maneja sector: entran transversales, se asignan a mano si aplica
+    jornada: num(f.jornada, 0),
+    admin: num(f.admin, 0),
+    indir: num(f.indir, 0),
+    aus: null
+  }));
+  const e=E();
+  const origen = str(paquete.origen,"") || "Monitor de dotación";
+  if(!confirm(`Se reemplazará la dotación actual (${e.rrhh.length} personas) por la del archivo (${nuevos.length} personas, anonimizadas).\n\nOrigen: ${origen}\n\nTus ediciones manuales previas en esta lista se perderán, pero podrás seguir editando la nueva dotación a mano. ¿Continuar?`)) return;
+  e.rrhh = nuevos;
+  rRRHH();
+  alert(`Dotación importada: ${nuevos.length} funcionarios, sin datos personales. Revisa las horas y, si tu centro sectoriza, asigna el sector de cada persona.`);
+});
+
 /* ═══ 05 BOX ════════════════════════════════════════════════════════ */
 function rBox(){
   const e=E(),R=Engine.compute(e);
@@ -1508,7 +1552,7 @@ function genInforme(){
   <h2>6. Alertas vigentes del escenario</h2>
   ${R.alertas.length?`<ul>${R.alertas.map(a=>`<li>${a.txt}</li>`).join("")}</ul>`:"<p>Sin alertas.</p>"}
 
-  <div class="firma">Elaborado con ProgramAPS a partir del modelo de programación comunal (estructura original: DESAM Coquimbo) reinterpretado como aplicación auditable. Los parámetros de cobertura, concentración y rendimiento deben contrastarse con las Orientaciones para la Planificación y Programación en Red del MINSAL vigentes para el año programado.</div>`;
+  <div class="firma">Elaborado con ProgramAPS a partir del modelo de programación comunal (estructura basada en una planilla de programación que circula en Chile) reinterpretado como aplicación auditable. Los parámetros de cobertura, concentración y rendimiento deben contrastarse con las Orientaciones para la Planificación y Programación en Red del MINSAL vigentes para el año programado.</div>`;
 }
 document.getElementById("btn-gen-informe").onclick=genInforme;
 document.getElementById("btn-print").onclick=()=>{genInforme();window.print();};

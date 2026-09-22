@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Monitor de dotación RRHH — CESFAM Tongoy · ProgramAPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#061A1D;--void2:#0A2529;--deep:#0E3339;--brand:#0E5F63;--brand2:#0B4A4E;--brand-lite:#3E9A93;
+  --mint:#7FD4C4;--mint-dim:#5BAEA2;--ink:#0C1A1D;--ink2:#3B4E53;--ink3:#7C979B;
+  --paper:#F4F7F7;--paper2:#FFFFFF;--line:#D5E0E0;--line-dk:#1B4147;
+  --ok:#3BB273;--ok-dk:#1E7B4F;--ok-s:#EAF6EF;--warn:#E0A63C;--warn-dk:#B47714;--warn-s:#FBF3E1;
+  --crit:#E5645B;--crit-dk:#B3372F;--crit-s:#FCEBE9;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;--disp:'Archivo',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{width:min(1320px,96vw);margin:0 auto}
+.hero{background:radial-gradient(120% 130% at 85% 10%,var(--deep),var(--void2) 45%,var(--void));color:#EAF3F2;padding:1.6rem 0 1.4rem}
+.hero .top{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+.logo{font-family:var(--disp);font-weight:800;font-size:1.3rem;letter-spacing:-.02em}.logo em{font-style:normal;color:var(--mint)}
+.kick{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mint-dim)}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.02em;margin:.6rem 0 .3rem;color:#fff}
+.hero p{color:#AFC9C6;max-width:80ch;font-size:.95rem}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-top:1.2rem}
+.kpi{background:rgba(255,255,255,.05);border:1px solid var(--line-dk);border-radius:12px;padding:.65rem .85rem;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--mint);opacity:.7}
+.kpi .v{font-family:var(--disp);font-weight:800;font-size:1.45rem;color:var(--mint);line-height:1}
+.kpi .l{font-size:.7rem;color:#9FC1BD;margin-top:.2rem}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.bar{position:sticky;top:0;z-index:30;background:rgba(244,247,247,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:.7rem 0}
+.bar .in{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+input,select{font-family:var(--sans);font-size:.88rem;padding:.45rem .7rem;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--brand-lite);border-color:var(--brand)}
+#q{min-width:220px}
+.btn{background:var(--brand);color:#fff;border:none;border-radius:8px;padding:.5rem .95rem;font-weight:600;font-size:.86rem;cursor:pointer;box-shadow:0 1px 3px rgba(14,95,99,.3);transition:.15s;white-space:nowrap}
+.btn:hover{background:var(--brand2)}.btn:active{transform:translateY(1px)}
+.btn.sec{background:#fff;color:var(--brand);border:1px solid var(--line);box-shadow:none}
+.btn.sec:hover{background:var(--paper)}
+.btn.mint{background:var(--mint);color:var(--void)}
+.btn.mint:hover{background:#95e0d1}
+.spacer{flex:1}.count{font-family:var(--mono);font-size:.78rem;color:var(--ink3)}
+.params{background:#E7F1F1;border-bottom:1px solid #CADEDE;padding:.6rem 0;font-size:.85rem}
+.params .in{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:center}
+.params label{color:var(--ink2);display:flex;align-items:center;gap:.4rem}
+.params input{width:4.5rem;padding:.3rem .5rem}
+.params input#p-estab{width:11rem}.params input#p-anio{width:5rem}
+.params .hint{color:var(--ink3);font-size:.8rem}
+.alert{background:var(--warn-s);border:1px solid #F0E0BE;border-radius:12px;padding:.7rem 1rem;margin:1.2rem 0;font-size:.88rem;color:var(--ink2)}
+.alert b{color:var(--warn-dk)}
+.alert.crit{background:var(--crit-s);border-color:#F5D3CF}.alert.crit b{color:var(--crit-dk)}
+.estamento{background:var(--paper2);border:1px solid var(--line);border-radius:14px;margin-bottom:1rem;overflow:hidden;box-shadow:0 1px 3px rgba(12,26,29,.04)}
+.est-head{display:flex;align-items:center;gap:.8rem;padding:.75rem 1.1rem;background:linear-gradient(90deg,var(--deep),var(--brand2));color:#fff}
+.est-head .chev{cursor:pointer;font-size:.85rem;color:var(--mint);transition:transform .2s}
+.estamento.collapsed .chev{transform:rotate(-90deg)}
+.estamento.collapsed .est-body{display:none}
+.est-head .nm{font-family:var(--disp);font-weight:700;font-size:1.05rem;flex:1}
+.est-head .badge{font-family:var(--mono);font-size:.72rem;background:rgba(127,212,196,.2);color:var(--mint);padding:.15rem .55rem;border-radius:20px;border:1px solid rgba(127,212,196,.3)}
+.est-head .addp{background:rgba(127,212,196,.15);color:var(--mint);border:1px solid rgba(127,212,196,.3);border-radius:7px;padding:.3rem .6rem;font-size:.78rem;cursor:pointer;font-weight:600}
+.est-head .addp:hover{background:rgba(127,212,196,.28);color:#fff}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:900px}
+thead th{background:var(--paper);text-align:left;padding:.5rem .7rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);font-weight:600;border-bottom:1px solid var(--line)}
+th.num,td.num{text-align:right}
+tbody td{padding:.35rem .7rem;border-bottom:1px solid #EEF3F3;vertical-align:middle}
+tbody tr:hover{background:#F9FBFB}
+tbody tr:last-child td{border-bottom:none}
+.codigo{font-family:var(--mono);font-weight:500;color:var(--brand);white-space:nowrap;font-size:.82rem}
+td input,td select{width:100%;border:1px solid transparent;background:transparent;border-radius:6px;padding:.32rem .45rem;font-size:.86rem}
+td input:hover,td select:hover{border-color:var(--line);background:#fff}
+td input:focus,td select:focus{border-color:var(--brand);background:#fff}
+td input.n{width:4.2rem;text-align:right;font-family:var(--mono)}
+td.calc{font-family:var(--mono);color:var(--ink2);text-align:right;font-size:.84rem}
+td.calc.aten{font-weight:600;color:var(--brand)}
+.aten-neg{color:var(--crit)!important;font-weight:700}
+.hbar{display:inline-block;height:7px;border-radius:4px;background:var(--brand);vertical-align:middle;margin-right:.35rem}
+.hbar.neg{background:var(--crit)}
+.del{background:none;border:none;color:var(--ink3);cursor:pointer;font-size:1.1rem;padding:.2rem .45rem;border-radius:6px;line-height:1}
+.del:hover{background:var(--crit-s);color:var(--crit)}
+.warn-row{background:var(--crit-s)!important}
+.est-foot{padding:.5rem 1.1rem;background:var(--paper);font-family:var(--mono);font-size:.76rem;color:var(--ink2);border-top:1px solid var(--line);display:flex;gap:1.4rem;flex-wrap:wrap}
+.est-foot b{color:var(--brand)}
+.hint-jef{font-size:.68rem;color:var(--warn-dk);margin-left:.3rem}
+.legend{background:#E7F1F1;border:1px solid #CADEDE;border-radius:14px;padding:1rem 1.2rem;margin:1.4rem 0}
+.legend h3{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--brand);margin-bottom:.5rem}
+.legend dl{display:grid;grid-template-columns:auto 1fr;gap:.3rem .9rem;font-size:.85rem}
+.legend dt{font-weight:600;color:var(--ink)}.legend dd{color:var(--ink2)}
+footer{text-align:center;padding:1.6rem 0 2.6rem;color:var(--ink3);font-family:var(--mono);font-size:.74rem}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--void);color:#fff;padding:.7rem 1.3rem;border-radius:10px;font-size:.88rem;opacity:0;transition:.25s;z-index:50;box-shadow:0 8px 30px rgba(0,0,0,.3);border:1px solid var(--line-dk)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media print{.bar,.params,.btn,.del,.addp{display:none}.estamento{break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="top"><span class="logo">Program<em>APS</em></span> <span class="kick">· Monitor de dotación · editable</span></div>
+    <h1 id="h-title">Dotación de RRHH — CESFAM Tongoy 2027</h1>
+    <p>Administra la dotación con cálculo en vivo: agrega o quita funcionarios, ajusta jornadas y horas de administración, y observa cómo cambian las horas para atención al instante. Guarda tu avance en un archivo de proyecto y retómalo cuando quieras. La codificación (Enfermero(a)&nbsp;1, 2…) se regenera sola.</p>
+    <div class="kpis" id="kpis"></div>
+  </div>
+</div>
+
+<div class="params">
+  <div class="wrap in">
+    <label>Establecimiento <input id="p-estab" type="text"></label>
+    <label>Año <input id="p-anio" type="number"></label>
+    <label>Colación (h) <input id="p-colacion" type="number" step="0.5"></label>
+    <label>Se descuenta desde jornada de (h) <input id="p-coldesde" type="number" step="1"></label>
+    <span class="hint">La jornada líquida y las horas de atención se recalculan con estos valores.</span>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="wrap in">
+    <input type="search" id="q" placeholder="Buscar nombre, código o estamento…">
+    <select id="filtro-est"><option value="">Todos los estamentos</option></select>
+    <button class="btn" id="btn-add">+ Funcionario</button>
+    <span class="spacer"></span>
+    <span class="count" id="count"></span>
+    <button class="btn sec" id="btn-expand">Colapsar todo</button>
+    <button class="btn sec" id="btn-csv">Exportar CSV</button>
+    <button class="btn sec" id="btn-prog" title="Genera un archivo anonimizado para importar en el módulo 04 de ProgramAPS">→ Exportar para ProgramAPS</button>
+    <button class="btn sec" id="btn-load">Cargar proyecto</button>
+    <button class="btn mint" id="btn-save">Guardar proyecto</button>
+    <input type="file" id="file-proj" accept=".json,application/json" style="display:none">
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="avisos"></div>
+  <div id="lista"></div>
+
+  <div class="legend">
+    <h3>Qué significan las horas (y cómo las usa ProgramAPS)</h3>
+    <dl>
+      <dt>Jornada contratada</dt><dd>Horas semanales del contrato (44, 33, 22, 11). El punto de partida.</dd>
+      <dt>Jornada líquida</dt><dd>Jornada menos colación (se descuenta desde el umbral configurado arriba). Es el tiempo realmente disponible. <b>Se calcula sola.</b></dd>
+      <dt>Administración</dt><dd>Gestión, coordinación, jefatura. No es atención directa. Una carga alta aquí (33–39 h) suele indicar jefatura: la app lo señala, pero tú defines el tipo.</dd>
+      <dt>Indirectas</dt><dd>Reuniones, registro, actividades de apoyo.</dd>
+      <dt>Horas para atención</dt><dd>= líquida − administración − indirectas. Es la <b>oferta asistencial</b> que ProgramAPS contrasta contra la demanda. <b>Se calcula sola.</b> Si sale en rojo, la persona está sobreasignada (más gestión que jornada).</dd>
+    </dl>
+  </div>
+</div>
+
+<footer>Monitor de dotación · datos internos de gestión · el archivo de proyecto no sale de tu computador</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   Monitor de dotación RRHH — arquitectura ProgramAPS
+   DATOS (semilla) · ESTADO (proyecto) · MOTOR (cálculo puro) · UI
+   Sin backend. Persistencia por archivo .json. Recálculo en vivo.
+   ═══════════════════════════════════════════════════════════════════ */
+const SEED = {"app":"MonitorRRHH-ProgramAPS","version":1,"meta":{"estab":"CESFAM Tongoy","anio":2027},"parametros":{"colacion":5,"colacionDesde":33},"funcionarios":[{"id":"f0","estamento":"Enfermero(a)","apellidos":"Ulloa Araneda","nombres":"Matias","jornada":44.0,"admin":10.0,"indir":1.39,"jefatura":""},{"id":"f1","estamento":"Enfermero(a)","apellidos":"Vega Zambra","nombres":"Diana Maria","jornada":44.0,"admin":22.0,"indir":0.57,"jefatura":""},{"id":"f2","estamento":"Enfermero(a)","apellidos":"Rojas Segura","nombres":"Francis","jornada":44.0,"admin":15.0,"indir":0.57,"jefatura":""},{"id":"f3","estamento":"Enfermero(a)","apellidos":"Vega Pastén","nombres":"Ana Luisa","jornada":44.0,"admin":39.0,"indir":0.57,"jefatura":""},{"id":"f4","estamento":"Enfermero(a)","apellidos":"Zambra Diaz","nombres":"Javiera","jornada":44.0,"admin":8.0,"indir":0.57,"jefatura":""},{"id":"f5","estamento":"Enfermero(a)","apellidos":"Teillier Nazal","nombres":"Claudia","jornada":44.0,"admin":39.0,"indir":0.57,"jefatura":""},{"id":"f6","estamento":"Enfermero(a)","apellidos":"Araya Rojas","nombres":"Valeria","jornada":44.0,"admin":16.0,"indir":0.57,"jefatura":""},{"id":"f7","estamento":"Enfermero(a)","apellidos":"Barraza Gonzalez","nombres":"Edilia Pamela","jornada":44.0,"admin":2.0,"indir":0.57,"jefatura":""},{"id":"f8","estamento":"Odontólogo(a)","apellidos":"Campos Galleguillos","nombres":"Amalia","jornada":33.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f9","estamento":"Odontólogo(a)","apellidos":"Tapia Apey","nombres":"Cristian","jornada":33.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f10","estamento":"Odontólogo(a)","apellidos":"Alfaro Aquea","nombres":"Sebastian","jornada":44.0,"admin":8.0,"indir":0.57,"jefatura":""},{"id":"f11","estamento":"Kinesiólogo(a)","apellidos":"Cortés Cortés","nombres":"Carmen Raquel","jornada":44.0,"admin":39.0,"indir":0.57,"jefatura":""},{"id":"f12","estamento":"Kinesiólogo(a)","apellidos":"Rebolledo Campos","nombres":"Francisca","jornada":44.0,"admin":39.0,"indir":0.57,"jefatura":""},{"id":"f13","estamento":"Kinesiólogo(a)","apellidos":"Ortiz Rojas","nombres":"Yolanda Haidee","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f14","estamento":"Kinesiólogo(a)","apellidos":"García Droguett","nombres":"Francisco","jornada":44.0,"admin":14.0,"indir":0.57,"jefatura":""},{"id":"f15","estamento":"Kinesiólogo(a)","apellidos":"Rojas Valdivia","nombres":"Juan Antonio","jornada":44.0,"admin":33.0,"indir":0.57,"jefatura":""},{"id":"f16","estamento":"Kinesiólogo(a)","apellidos":"Riera Cristi","nombres":"Ignacio","jornada":44.0,"admin":16.0,"indir":0.57,"jefatura":""},{"id":"f17","estamento":"Nutricionista","apellidos":"Olivares Olivares","nombres":"Denisse","jornada":44.0,"admin":2.0,"indir":0.57,"jefatura":""},{"id":"f18","estamento":"Nutricionista","apellidos":"Diaz Tejada","nombres":"Evelyn Carolina","jornada":44.0,"admin":15.0,"indir":1.39,"jefatura":""},{"id":"f19","estamento":"Nutricionista","apellidos":"Dragojevic Chacana","nombres":"Vania Constanza","jornada":44.0,"admin":8.0,"indir":0.57,"jefatura":""},{"id":"f20","estamento":"Asistente Social","apellidos":"Guerrero Clavijo","nombres":"Aida","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f21","estamento":"Asistente Social","apellidos":"Rebeco Villalobos","nombres":"Carlos","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f22","estamento":"Asistente Social","apellidos":"Santander Rivera","nombres":"Ney","jornada":44.0,"admin":39.0,"indir":0.57,"jefatura":""},{"id":"f23","estamento":"Asistente Social","apellidos":"Gajardo Garcia","nombres":"Camila Fernanda","jornada":22.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f24","estamento":"Asistente Social","apellidos":"Arias Ossandon","nombres":"Valeria Sabrina","jornada":33.0,"admin":11.0,"indir":0.57,"jefatura":""},{"id":"f25","estamento":"Asistente Social","apellidos":"Segovia Albanez","nombres":"Katherine Paola","jornada":22.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f26","estamento":"Psicólogo(a)","apellidos":"Fredes Boyd","nombres":"Andrea","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f27","estamento":"Psicólogo(a)","apellidos":"Ugarte Vicencio","nombres":"Ignacio","jornada":44.0,"admin":4.0,"indir":1.39,"jefatura":""},{"id":"f28","estamento":"Psicólogo(a)","apellidos":"Peñafiel Urrutia","nombres":"Paul","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f29","estamento":"Educador(a) de Párvulos","apellidos":"Miranda Barahona","nombres":"Eybiline","jornada":44.0,"admin":22.75,"indir":0.57,"jefatura":""},{"id":"f30","estamento":"Matrón(a)","apellidos":"Lopez Honores","nombres":"Pedro Antonio","jornada":44.0,"admin":33.0,"indir":0.57,"jefatura":""},{"id":"f31","estamento":"Matrón(a)","apellidos":"Toro Cardenas","nombres":"Carla Cristal","jornada":44.0,"admin":15.0,"indir":1.39,"jefatura":""},{"id":"f32","estamento":"Matrón(a)","apellidos":"Lepe Ponce","nombres":"Tamara Francisca","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f33","estamento":"Matrón(a)","apellidos":"Gomez San Martin","nombres":"Faryde","jornada":11.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f34","estamento":"Tons","apellidos":"Alvarado Marin","nombres":"Gloria","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f35","estamento":"Fonoaudiólogo(a)","apellidos":"Orrego Vargas","nombres":"Yennifer Alexandra","jornada":11.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f36","estamento":"Médico","apellidos":"Montero López","nombres":"Eduardo","jornada":44.0,"admin":15.0,"indir":3.57,"jefatura":""},{"id":"f37","estamento":"Médico","apellidos":"Rojas Rodríguez","nombres":"Eligio","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f38","estamento":"Médico","apellidos":"Navarro Rivera","nombres":"Tomas Arturo","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f39","estamento":"Médico","apellidos":"Zambra Allende","nombres":"Rene","jornada":44.0,"admin":3.0,"indir":0.57,"jefatura":""},{"id":"f40","estamento":"Médico","apellidos":"Fariña Galleguillos","nombres":"Ricardo","jornada":44.0,"admin":1.0,"indir":0.57,"jefatura":""},{"id":"f41","estamento":"Tens","apellidos":"Rivera Sequeida","nombres":"Gabriel","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f42","estamento":"Tens","apellidos":"Véliz Araya","nombres":"Luz","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f43","estamento":"Tens","apellidos":"Véliz Cortés","nombres":"Cristian","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f44","estamento":"Tens","apellidos":"Carrasco Barria","nombres":"Denys","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f45","estamento":"Auxiliar Paramédico Enfermería","apellidos":"Cuello Peña","nombres":"Reinaldo","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f46","estamento":"Tens","apellidos":"Castillo Araya","nombres":"Karen","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f47","estamento":"Tens","apellidos":"Perez Dubo","nombres":"Maria Angélica","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f48","estamento":"Tens","apellidos":"Barraza Cortés","nombres":"Maria José","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f49","estamento":"Tens","apellidos":"Jorquera Gallardo","nombres":"Loreto","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f50","estamento":"Tens","apellidos":"Ramirez Chinga","nombres":"Gladys","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f51","estamento":"Tens","apellidos":"Lopez Rojas","nombres":"Miguel Angel","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f52","estamento":"Auxiliar Paramédico Enfermería","apellidos":"Sapiain Gónzalez","nombres":"Miriam","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f53","estamento":"Tens","apellidos":"Cerda Solar","nombres":"Luz Maria","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f54","estamento":"Tens","apellidos":"Cortés Jimenez","nombres":"Paola","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f55","estamento":"Tens","apellidos":"Zepeda Cortés","nombres":"Eilen","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f56","estamento":"Tens","apellidos":"Zambra Zambra","nombres":"Nevenka","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f57","estamento":"Tens","apellidos":"Fernandez Alfaro","nombres":"Cecilia","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f58","estamento":"Tens","apellidos":"Ibacache Honores","nombres":"Alejandra","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f59","estamento":"Tens","apellidos":"Acuña Piñones","nombres":"Rony","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f60","estamento":"Tens","apellidos":"Diaz Rojas","nombres":"Miriam","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f61","estamento":"Auxiliar Paramédico Farmacia","apellidos":"Rivera Olivares","nombres":"Angélica","jornada":44.0,"admin":0.0,"indir":0.57,"jefatura":""},{"id":"f62","estamento":"Matrón(a)","apellidos":"Uribe Alegria","nombres":"Marcela","jornada":44.0,"admin":18.0,"indir":0.57,"jefatura":""},{"id":"f63","estamento":"Podólogo(a)","apellidos":"Galleguillos Campos","nombres":"Angelica","jornada":11.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f64","estamento":"Enfermero(a)","apellidos":"Lobos Rubio","nombres":"Aliz Gabriela","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f65","estamento":"Enfermero(a)","apellidos":"Sepulveda Candia","nombres":"Michel","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f66","estamento":"Kinesiólogo(a)","apellidos":"Vivar Araya","nombres":"Marina","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f67","estamento":"Kinesiólogo(a)","apellidos":"Diaz Roman","nombres":"Leyla","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f68","estamento":"Médico","apellidos":"Malfa Gonzalez","nombres":"Jesus Manuel","jornada":22.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f69","estamento":"Médico","apellidos":"Iriarte Neyra","nombres":"Felipe Andres","jornada":33.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f70","estamento":"Nutricionista","apellidos":"Rojas Sierra","nombres":"Constanza","jornada":11.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f71","estamento":"Tens","apellidos":"Espinoza Campos","nombres":"Rodrigo","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f72","estamento":"Kinesiólogo(a)","apellidos":"Tabilo Cortes","nombres":"Valeria Alejandra","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f73","estamento":"Terapeuta Ocupacional","apellidos":"Vega Alfaro","nombres":"Ilse Cecilia","jornada":44.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f74","estamento":"Médico","apellidos":"Alarcón Kunakov","nombres":"Valeria Anais","jornada":33.0,"admin":0.0,"indir":0.0,"jefatura":""},{"id":"f75","estamento":"Tecnólogo(a) Médico","apellidos":"Meneses Castillo","nombres":"Luis","jornada":44.0,"admin":39.0,"indir":0.0,"jefatura":""},{"id":"f76","estamento":"Psicólogo(a)","apellidos":"Castillo Gonzalez","nombres":"Joaquin","jornada":11.0,"admin":0.0,"indir":0.0,"jefatura":""}]};
+
+/* ── seguridad: escape de todo texto libre antes de ir al DOM ── */
+const esc = s => (s==null?"":String(s))
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+const clone = o => JSON.parse(JSON.stringify(o));
+const uid = () => "f"+Math.random().toString(36).slice(2,9);
+const fmt = n => (Math.round(n*10)/10).toLocaleString("es-CL",{minimumFractionDigits:0,maximumFractionDigits:1});
+
+/* ── ESTADO ── */
+let P = clone(SEED);
+
+/* ── MOTOR: funciones puras, no tocan el DOM ── */
+const Motor = {
+  liquida(p){ const j=+p.jornada||0; return j >= (P.parametros.colacionDesde??33) ? j-(+P.parametros.colacion||0) : j; },
+  atencion(p){ return this.liquida(p) - (+p.admin||0) - (+p.indir||0); },
+  estamentos(){
+    const c={}; P.funcionarios.forEach(f=>c[f.estamento]=(c[f.estamento]||0)+1);
+    return Object.keys(c).sort((a,b)=> c[b]-c[a] || a.localeCompare(b));
+  },
+  codigos(){
+    const cont={}, cod={};
+    P.funcionarios.forEach(f=>{ cont[f.estamento]=(cont[f.estamento]||0)+1; cod[f.id]=f.estamento+" "+cont[f.estamento]; });
+    return cod;
+  },
+  totales(){
+    let j=0,at=0,ad=0;
+    P.funcionarios.forEach(f=>{ j+=+f.jornada||0; at+=this.atencion(f); ad+=+f.admin||0; });
+    return {n:P.funcionarios.length, est:this.estamentos().length, jornada:j, atencion:at, admin:ad,
+            jefaturas:P.funcionarios.filter(f=>f.jefatura&&f.jefatura!=="").length};
+  }
+};
+
+/* ── UI ── */
+const JEF_OPTS = ["", "Jefatura", "Coordinación", "Encargado/a", "Subrogancia"];
+const $ = id => document.getElementById(id);
+let colapsados = new Set();
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("on"); setTimeout(()=>t.classList.remove("on"),2200); }
+
+function pintarParams(){
+  $("p-estab").value = P.meta.estab||"";
+  $("p-anio").value = P.meta.anio||"";
+  $("p-colacion").value = P.parametros.colacion;
+  $("p-coldesde").value = P.parametros.colacionDesde;
+  $("h-title").textContent = `Dotación de RRHH — ${P.meta.estab||"establecimiento"} ${P.meta.anio||""}`;
+}
+
+function pintarKPIs(){
+  const t = Motor.totales();
+  $("kpis").innerHTML = `
+    <div class="kpi"><div class="v">${t.n}</div><div class="l">funcionarios</div></div>
+    <div class="kpi"><div class="v">${t.est}</div><div class="l">estamentos</div></div>
+    <div class="kpi"><div class="v">${fmt(t.jornada)}</div><div class="l">h contratadas/sem</div></div>
+    <div class="kpi"><div class="v">${fmt(t.atencion)}</div><div class="l">h para atención/sem</div></div>
+    <div class="kpi"><div class="v">${t.jefaturas}</div><div class="l">jefaturas definidas</div></div>`;
+}
+
+function pintarFiltro(){
+  const cur = $("filtro-est").value;
+  $("filtro-est").innerHTML = `<option value="">Todos los estamentos</option>` +
+    Motor.estamentos().map(e=>`<option value="${esc(e)}" ${e===cur?"selected":""}>${esc(e)}</option>`).join("");
+}
+
+function pintarAvisos(){
+  const av=[];
+  const tons = P.funcionarios.filter(f=>/^tons$/i.test(f.estamento));
+  if(tons.length) av.push(`<div class="alert"><b>⚠ Revisar:</b> ${tons.length} registro(s) con estamento «Tons», que parece un error de tipeo de «Tens» (${tons.map(f=>esc(f.apellidos+" "+f.nombres)).join(", ")}). Corrígelo en la celda si corresponde; la codificación se renumerará sola.</div>`);
+  const sobre = P.funcionarios.filter(f=>Motor.atencion(f) < -0.01);
+  if(sobre.length){
+    const cod=Motor.codigos();
+    av.push(`<div class="alert crit"><b>⚠ Sobreasignados:</b> ${sobre.length} funcionario(s) tienen más horas de administración e indirectas que su jornada líquida, así que sus horas para atención salen negativas: ${sobre.map(f=>esc(cod[f.id])).join(", ")}. Revisa sus horas.</div>`);
+  }
+  $("avisos").innerHTML = av.join("");
+}
+
+function filaFunc(f, cod){
+  const at = Motor.atencion(f), liq = Motor.liquida(f);
+  const w = Math.max(0, Math.min(60, at/44*60));
+  const hintJef = (!f.jefatura && (+f.admin||0)>=33) ? `<span class="hint-jef" title="Alta carga administrativa: posible jefatura">● admin alta</span>` : "";
+  const sel = JEF_OPTS.map(o=>`<option value="${esc(o)}" ${o===(f.jefatura||"")?"selected":""}>${o===""?"—":esc(o)}</option>`).join("");
+  return `<tr data-id="${f.id}" class="${at<-0.01?"warn-row":""}">
+    <td class="codigo">${esc(cod[f.id])}</td>
+    <td><input data-k="apellidos" value="${esc(f.apellidos)}" placeholder="Apellidos"></td>
+    <td><input data-k="nombres" value="${esc(f.nombres)}" placeholder="Nombres"></td>
+    <td><input data-k="estamento" value="${esc(f.estamento)}" list="dl-est" placeholder="Estamento"></td>
+    <td class="num"><input class="n" data-k="jornada" type="number" step="1" min="0" value="${f.jornada}"></td>
+    <td class="calc">${fmt(liq)}</td>
+    <td class="num"><input class="n" data-k="admin" type="number" step="0.5" min="0" value="${f.admin}"></td>
+    <td class="num"><input class="n" data-k="indir" type="number" step="0.1" min="0" value="${f.indir}"></td>
+    <td class="calc aten ${at<-0.01?"aten-neg":""}"><span class="hbar ${at<0?"neg":""}" style="width:${w}px"></span>${fmt(at)}</td>
+    <td><select data-k="jefatura">${sel}</select>${hintJef}</td>
+    <td><button class="del" title="Quitar funcionario">✕</button></td>
+  </tr>`;
+}
+
+function render(){
+  pintarParams(); pintarKPIs(); pintarFiltro(); pintarAvisos();
+  const q = $("q").value.trim().toLowerCase();
+  const fe = $("filtro-est").value;
+  const cod = Motor.codigos();
+  const cont = $("lista"); cont.innerHTML="";
+  let visibles=0;
+  const dl = `<datalist id="dl-est">${Motor.estamentos().map(e=>`<option value="${esc(e)}">`).join("")}</datalist>`;
+
+  for(const est of Motor.estamentos()){
+    if(fe && est!==fe) continue;
+    let pers = P.funcionarios.filter(f=>f.estamento===est);
+    if(q) pers = pers.filter(f=>
+      (f.apellidos+" "+f.nombres).toLowerCase().includes(q) ||
+      cod[f.id].toLowerCase().includes(q) || est.toLowerCase().includes(q));
+    if(!pers.length) continue;
+    visibles += pers.length;
+    const sumJ=pers.reduce((s,f)=>s+(+f.jornada||0),0);
+    const sumAt=pers.reduce((s,f)=>s+Motor.atencion(f),0);
+    const sumAd=pers.reduce((s,f)=>s+(+f.admin||0),0);
+    const div=document.createElement("div");
+    div.className="estamento"+(colapsados.has(est)?" collapsed":"");
+    div.innerHTML=`
+      <div class="est-head">
+        <span class="chev" data-est="${esc(est)}">▼</span>
+        <span class="nm">${esc(est)}</span>
+        <span class="badge">${pers.length} ${pers.length===1?"persona":"personas"}</span>
+        <button class="addp" data-addest="${esc(est)}">+ agregar a ${esc(est)}</button>
+      </div>
+      <div class="est-body"><div class="tbl-wrap"><table>
+        <thead><tr>
+          <th>Código</th><th>Apellidos</th><th>Nombres</th><th>Estamento</th>
+          <th class="num">Jornada</th><th class="num">Líquida</th>
+          <th class="num">Admin</th><th class="num">Indir.</th>
+          <th class="num">Atención</th><th>Jefatura</th><th></th>
+        </tr></thead>
+        <tbody>${pers.map(f=>filaFunc(f,cod)).join("")}</tbody>
+      </table></div>
+      <div class="est-foot"><span>Jornada: <b>${fmt(sumJ)} h</b></span><span>Atención: <b>${fmt(sumAt)} h</b></span><span>Administración: <b>${fmt(sumAd)} h</b></span></div>
+      </div>`;
+    cont.appendChild(div);
+  }
+  cont.insertAdjacentHTML("beforeend", dl);
+  $("count").textContent = visibles+" de "+P.funcionarios.length+" funcionarios";
+  if(!visibles) cont.innerHTML='<p style="padding:2rem;text-align:center;color:var(--ink3)">Sin resultados. '+(P.funcionarios.length?'Ajusta el filtro.':'Agrega el primer funcionario con «+ Funcionario».')+'</p>';
+}
+
+/* ── edición en vivo (delegación) ── */
+$("lista").addEventListener("input", e=>{
+  const tr=e.target.closest("tr[data-id]"); if(!tr)return;
+  const f=P.funcionarios.find(x=>x.id===tr.dataset.id); if(!f)return;
+  const k=e.target.dataset.k; if(!k)return;
+  if(["jornada","admin","indir"].includes(k)){
+    f[k]=+e.target.value||0;
+    tr.querySelector("td.calc:not(.aten)").textContent=fmt(Motor.liquida(f));
+    const at=Motor.atencion(f), atCell=tr.querySelector("td.aten");
+    const w=Math.max(0,Math.min(60,at/44*60));
+    atCell.className="calc aten"+(at<-0.01?" aten-neg":"");
+    atCell.innerHTML=`<span class="hbar ${at<0?"neg":""}" style="width:${w}px"></span>${fmt(at)}`;
+    tr.classList.toggle("warn-row", at<-0.01);
+    pintarKPIs(); pintarAvisos(); actualizarPie(f.estamento);
+  } else {
+    f[k]=e.target.value;
+  }
+});
+$("lista").addEventListener("change", e=>{
+  const tr=e.target.closest("tr[data-id]"); if(!tr)return;
+  const f=P.funcionarios.find(x=>x.id===tr.dataset.id); if(!f)return;
+  const k=e.target.dataset.k;
+  if(k==="jefatura"){ f.jefatura=e.target.value; pintarKPIs(); render(); }
+  if(k==="estamento"){ f.estamento=e.target.value.trim()||"(sin estamento)"; render(); }
+});
+function actualizarPie(est){
+  const pers=P.funcionarios.filter(f=>f.estamento===est);
+  const div=[...document.querySelectorAll(".estamento")].find(d=>d.querySelector(".nm") && d.querySelector(".nm").textContent===est);
+  const foot=div && div.querySelector(".est-foot");
+  if(foot){
+    const sumJ=pers.reduce((s,f)=>s+(+f.jornada||0),0), sumAt=pers.reduce((s,f)=>s+Motor.atencion(f),0), sumAd=pers.reduce((s,f)=>s+(+f.admin||0),0);
+    foot.innerHTML=`<span>Jornada: <b>${fmt(sumJ)} h</b></span><span>Atención: <b>${fmt(sumAt)} h</b></span><span>Administración: <b>${fmt(sumAd)} h</b></span>`;
+  }
+}
+
+/* ── quitar / colapsar / agregar ── */
+$("lista").addEventListener("click", e=>{
+  if(e.target.classList.contains("del")){
+    const tr=e.target.closest("tr[data-id]");
+    const f=P.funcionarios.find(x=>x.id===tr.dataset.id);
+    if(f && confirm(`¿Quitar a ${f.apellidos} ${f.nombres} (${f.estamento})?`)){
+      P.funcionarios=P.funcionarios.filter(x=>x.id!==f.id); render();
+    }
+  }
+  if(e.target.classList.contains("chev")){
+    const est=e.target.dataset.est;
+    if(colapsados.has(est))colapsados.delete(est); else colapsados.add(est);
+    e.target.closest(".estamento").classList.toggle("collapsed");
+  }
+  if(e.target.classList.contains("addp")){ agregar(e.target.dataset.addest); }
+});
+function agregar(estamento){
+  const est = estamento || ($("filtro-est").value || "Nuevo estamento");
+  P.funcionarios.push({id:uid(), estamento:est, apellidos:"", nombres:"", jornada:44, admin:0, indir:0, jefatura:""});
+  colapsados.delete(est);
+  render();
+  const rows=[...document.querySelectorAll(`tr[data-id]`)];
+  const last=rows[rows.length-1];
+  if(last){ last.scrollIntoView({behavior:"smooth",block:"center"}); const inp=last.querySelector('input[data-k="apellidos"]'); if(inp)inp.focus(); }
+}
+$("btn-add").onclick=()=>agregar();
+
+/* ── parámetros ── */
+["p-estab","p-anio","p-colacion","p-coldesde"].forEach(id=>{
+  $(id).addEventListener("input", ()=>{
+    P.meta.estab=$("p-estab").value;
+    P.meta.anio=+$("p-anio").value||"";
+    P.parametros.colacion=+$("p-colacion").value||0;
+    P.parametros.colacionDesde=+$("p-coldesde").value||0;
+    render();
+  });
+});
+
+/* ── búsqueda / filtro / expandir ── */
+$("q").addEventListener("input", render);
+$("filtro-est").addEventListener("change", render);
+let colapsadoTodo=false;
+$("btn-expand").onclick=function(){
+  colapsadoTodo=!colapsadoTodo;
+  if(colapsadoTodo){ Motor.estamentos().forEach(e=>colapsados.add(e)); this.textContent="Expandir todo"; }
+  else { colapsados.clear(); this.textContent="Colapsar todo"; }
+  render();
+};
+
+/* ── guardar proyecto (.json) ── */
+$("btn-save").onclick=()=>{
+  P.app="MonitorRRHH-ProgramAPS"; P.version=1;
+  const blob=new Blob([JSON.stringify(P,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  const nombre=(P.meta.estab||"dotacion").replace(/[^\wáéíóúñ]+/gi,"_");
+  a.href=URL.createObjectURL(blob);
+  a.download=`dotacion_${nombre}_${P.meta.anio||""}.json`;
+  a.click();
+  toast("Proyecto guardado ✓");
+};
+
+/* ── cargar proyecto con validación y saneamiento ── */
+function sanear(x){
+  if(!x||typeof x!=="object"||!Array.isArray(x.funcionarios)) return null;
+  const num=(v,d)=>(typeof v==="number"&&isFinite(v))?v:(isFinite(+v)?+v:d);
+  const str=(v,d)=>(typeof v==="string")?v.slice(0,120):d;
+  return {
+    app:"MonitorRRHH-ProgramAPS", version:1,
+    meta:{ estab:str(x.meta&&x.meta.estab,"CESFAM"), anio:num(x.meta&&x.meta.anio,2027) },
+    parametros:{ colacion:num(x.parametros&&x.parametros.colacion,5), colacionDesde:num(x.parametros&&x.parametros.colacionDesde,33) },
+    funcionarios: x.funcionarios.map(f=>({
+      id:str(f.id,uid())||uid(), estamento:str(f.estamento,"(sin estamento)")||"(sin estamento)",
+      apellidos:str(f.apellidos,""), nombres:str(f.nombres,""),
+      jornada:num(f.jornada,0), admin:num(f.admin,0), indir:num(f.indir,0),
+      jefatura: JEF_OPTS.includes(f.jefatura)?f.jefatura:""
+    }))
+  };
+}
+$("btn-load").onclick=()=>$("file-proj").click();
+$("file-proj").addEventListener("change", async ev=>{
+  const file=ev.target.files[0]; ev.target.value="";
+  if(!file)return;
+  if(file.size>10*1024*1024){ alert("El archivo es demasiado grande para ser un proyecto válido."); return; }
+  try{
+    const obj=JSON.parse(await file.text());
+    const limpio=sanear(obj);
+    if(!limpio) throw 0;
+    P=limpio; colapsados.clear(); colapsadoTodo=false; $("btn-expand").textContent="Colapsar todo";
+    render(); toast("Proyecto cargado ✓ "+P.funcionarios.length+" funcionarios");
+  }catch(e){ alert("El archivo no es un proyecto de dotación válido o está dañado."); }
+});
+
+/* ── exportar CSV ── */
+/* ── exportar para ProgramAPS (módulo 04), ANONIMIZADO ──────────────
+   Cruza la barrera de privacidad una sola vez, aquí, en la salida. El
+   archivo resultante NO contiene nombres: la glosa pasa a ser el código
+   (Enfermero(a) 1, 2…), y solo viajan estamento, jornada, admin e
+   indirectas — justo lo que el módulo 04 necesita para el cálculo. La
+   jefatura, dato de gestión, se queda en el Monitor y no se traspasa. */
+$("btn-prog").onclick=()=>{
+  const cod=Motor.codigos();
+  const rrhh = P.funcionarios.map(f=>({
+    glosa: cod[f.id],              // el código reemplaza al nombre: reconocible, no identificable
+    est: f.estamento,
+    jornada: +f.jornada||0,
+    admin: +f.admin||0,
+    indir: +f.indir||0
+  }));
+  const paquete = {
+    app: "ProgramAPS-RRHH",        // marca que ProgramAPS reconoce al importar
+    version: 1,
+    origen: "Monitor de dotación",
+    anonimizado: true,
+    meta: { estab: P.meta.estab||"", anio: P.meta.anio||"" },
+    rrhh
+  };
+  const blob=new Blob([JSON.stringify(paquete,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  const nombre=(P.meta.estab||"dotacion").replace(/[^\wáéíóúñ]+/gi,"_");
+  a.href=URL.createObjectURL(blob);
+  a.download=`rrhh_programaps_${nombre}_${P.meta.anio||""}.json`;
+  a.click();
+  toast("Archivo anonimizado para ProgramAPS ✓ ("+rrhh.length+" funcionarios, sin nombres)");
+};
+
+$("btn-csv").onclick=()=>{
+  const cod=Motor.codigos();
+  const lim=s=>'"'+String(s==null?"":s).replace(/"/g,'""')+'"';
+  let csv="Estamento;Codigo;Apellidos;Nombres;Jornada;Liquida;Admin;Indirectas;Atencion;Jefatura\n";
+  for(const est of Motor.estamentos())
+    for(const f of P.funcionarios.filter(x=>x.estamento===est))
+      csv+=[f.estamento,cod[f.id],f.apellidos,f.nombres,f.jornada,Motor.liquida(f),f.admin,f.indir,Motor.atencion(f).toFixed(2),f.jefatura||""].map(lim).join(";")+"\n";
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="dotacion_codificada.csv"; a.click();
+  toast("CSV exportado ✓");
+};
+
+render();
+</script>
+</body>
+</html>
