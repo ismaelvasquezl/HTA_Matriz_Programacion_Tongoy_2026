@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lámina de referencia — Horas semanales por rendimiento · ProgramAPS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#061A1D;--void2:#0A2529;--deep:#0E3339;--brand:#0E5F63;--brand2:#0B4A4E;--brand-lite:#3E9A93;
+  --mint:#7FD4C4;--mint-dim:#5BAEA2;--ink:#0C1A1D;--ink2:#3B4E53;--ink3:#7C979B;
+  --paper:#F4F7F7;--paper2:#FFFFFF;--line:#D5E0E0;--line-dk:#1B4147;
+  --ok:#3BB273;--ok-s:#EAF6EF;--warn:#E0A63C;--warn-s:#FBF3E1;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;--disp:'Archivo',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);color:var(--ink);background:#E9EEEE;line-height:1.5;padding:2rem 1rem}
+.sheet{width:min(1000px,96vw);margin:0 auto;background:var(--paper2);border-radius:16px;overflow:hidden;box-shadow:0 10px 40px rgba(6,26,29,.14)}
+.hero{background:radial-gradient(120% 130% at 85% 10%,var(--deep),var(--void2) 50%,var(--void));color:#EAF3F2;padding:1.6rem 2rem 1.4rem}
+.hero .top{display:flex;align-items:baseline;gap:.6rem}
+.logo{font-family:var(--disp);font-weight:800;font-size:1.2rem}.logo em{font-style:normal;color:var(--mint)}
+.kick{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mint-dim)}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:1.7rem;letter-spacing:-.02em;margin:.5rem 0 .3rem;color:#fff}
+.formula{font-family:var(--mono);font-size:.95rem;color:var(--mint);background:rgba(127,212,196,.1);border:1px solid rgba(127,212,196,.25);border-radius:9px;padding:.5rem .9rem;display:inline-block;margin-top:.6rem}
+.body{padding:1.6rem 2rem 2rem}
+.lead{color:var(--ink2);font-size:.95rem;max-width:72ch;margin-bottom:1.2rem}
+table{width:100%;border-collapse:collapse;font-size:.92rem;margin:.5rem 0 1rem}
+th,td{border:1px solid var(--line);padding:.5rem .4rem;text-align:center}
+thead th{background:var(--brand);color:#fff;font-weight:600;font-family:var(--mono);font-size:.82rem}
+thead th:first-child{background:var(--void2)}
+tbody th{background:#E7F1F1;color:var(--brand2);font-weight:700;font-family:var(--mono)}
+tbody td{font-family:var(--mono);color:var(--ink);font-size:.88rem}
+tbody td.exact{background:var(--ok-s);font-weight:600;color:var(--brand2)}
+caption{caption-side:top;text-align:left;font-family:var(--disp);font-weight:700;font-size:1.05rem;color:var(--ink);margin-bottom:.5rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:1.4rem}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:1rem 1.2rem}
+.card h3{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--brand);margin-bottom:.6rem}
+.val-table{font-size:.86rem}
+.val-table td{text-align:left;border:none;padding:.22rem 0}
+.val-table td:last-child{text-align:right;font-family:var(--mono);font-weight:600;color:var(--brand2)}
+.example{background:var(--void2);color:#EAF3F2;border-radius:12px;padding:1rem 1.2rem}
+.example h3{font-family:var(--disp);font-weight:700;font-size:1rem;color:var(--mint);margin-bottom:.5rem}
+.example code{font-family:var(--mono);font-size:.85rem;color:#CFE4E1;display:block;line-height:1.8}
+.example b{color:var(--mint)}
+.note{background:var(--warn-s);border:1px solid #F0E0BE;border-radius:11px;padding:.8rem 1.1rem;margin-top:1.3rem;font-size:.86rem;color:var(--ink2)}
+.note b{color:#B47714}
+.foot{text-align:center;padding:1rem;color:var(--ink3);font-family:var(--mono);font-size:.72rem;border-top:1px solid var(--line)}
+.print-btn{display:block;width:fit-content;margin:1.2rem auto 0;background:var(--brand);color:#fff;border:none;border-radius:9px;padding:.6rem 1.4rem;font-weight:600;font-size:.9rem;cursor:pointer}
+.print-btn:hover{background:var(--brand2)}
+@media print{body{background:#fff;padding:0}.sheet{box-shadow:none;border-radius:0;width:100%}.print-btn{display:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="hero">
+    <div class="top"><span class="logo">Program<em>APS</em></span> <span class="kick">· Lámina de referencia</span></div>
+    <h1>Horas semanales según rendimiento</h1>
+    <div class="formula">h/sem = (atenciones por semana × rendimiento en min) ÷ 60</div>
+  </div>
+  <div class="body">
+    <p class="lead">Cuánto ocupa en la columna <b>h/sem</b> del módulo 06 una prestación, según los minutos de cada atención y cuántas atenciones realiza el estamento por semana.</p>
+
+    <table>
+      <caption>Tabla de conversión</caption>
+      <thead>
+        <tr>
+          <th>Atenciones / semana</th>
+          <th>5 min</th><th>10 min</th><th>15 min</th><th>20 min</th><th>30 min</th><th>45 min</th><th>60 min</th>
+        </tr>
+      </thead>
+      <tbody id="tb"></tbody>
+    </table>
+
+    <div class="two">
+      <div class="card">
+        <h3>Valor por atención (en horas)</h3>
+        <table class="val-table">
+          <tr><td>5 min</td><td>0,083 h</td></tr>
+          <tr><td>10 min</td><td>0,167 h</td></tr>
+          <tr><td>15 min</td><td>0,250 h</td></tr>
+          <tr><td>20 min</td><td>0,333 h</td></tr>
+          <tr><td>30 min</td><td>0,500 h</td></tr>
+          <tr><td>45 min</td><td>0,750 h</td></tr>
+          <tr><td>60 min</td><td>1,000 h</td></tr>
+        </table>
+      </div>
+      <div class="example">
+        <h3>Ejemplo</h3>
+        <code>
+Estamento 4 · rendimiento <b>60 min</b><br>
+hace <b>1 atención</b> por semana<br><br>
+1 × 60 ÷ 60 = <b>1,0 h/sem</b><br><br>
+Con 60 min, el h/sem es<br>igual a las atenciones<br>por semana (cada una<br>dura una hora).
+        </code>
+      </div>
+    </div>
+
+    <div class="note">
+      <b>Dos recordatorios al usarla en ProgramAPS:</b> las atenciones/semana equivalen a <b>actividades-año ÷ semanas</b> (en tu ejercicio, ÷44). La app no te pide atenciones semanales directo: salen de población × cobertura × concentración × % asignado. Además, ProgramAPS <b>redondea las actividades/año hacia arriba</b> antes de dividir, así que en casos reales el h/sem puede quedar levemente por encima de esta tabla teórica.
+    </div>
+    <button class="print-btn" onclick="window.print()">Imprimir o guardar como PDF</button>
+  </div>
+  <div class="foot">ProgramAPS · herramienta abierta para la Atención Primaria de Salud en Chile</div>
+</div>
+<script>
+const RENDS=[5,10,15,20,30,45,60], ATN=[1,2,3,4,5,6,7,8,9,10,12,15,20];
+const tb=document.getElementById("tb");
+ATN.forEach(a=>{
+  let tr="<tr><th>"+a+"</th>";
+  RENDS.forEach(r=>{
+    const v=a*r/60;
+    const exact=Math.abs(v-Math.round(v))<1e-9;
+    tr+=`<td class="${exact?'exact':''}">${v.toLocaleString("es-CL",{minimumFractionDigits:2,maximumFractionDigits:2})}</td>`;
+  });
+  tb.innerHTML+=tr+"</tr>";
+});
+</script>
+</body>
+</html>
